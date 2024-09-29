@@ -1,0 +1,17 @@
+.vs
+.vscode
+
+HD.Wallet.Shared/obj
+HD.Wallet.Shared/bin
+
+
+Gateways/*/obj
+Gateways/*/bin
+
+Services/*/obj
+Services/*/bin
+
+
+
+
+

@@ -1,0 +1,102 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:10000"
+  },
+  "Routes": [
+    {
+      "UpstreamPathTemplate": "/api/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "DownstreamScheme": "https",
+      "DownstreamPathTemplate": "/product-api/{everything}",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "ecommerce.hayugo.edu.vn",
+          "Port": 443
+        }
+      ],
+      "SwaggerKey": "Products"
+    },
+    {
+      "UpstreamPathTemplate": "/api/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "DownstreamScheme": "https",
+      "DownstreamPathTemplate": "/discount-api/{everything}",
+      "DownstreamHostAndPorts": [
+        {
+
+          "Host": "ecommerce.hayugo.edu.vn",
+          "Port": 443
+        }
+      ],
+      "SwaggerKey": "Discounts"
+    },
+    {
+      "UpstreamPathTemplate": "/api/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "DownstreamScheme": "https",
+      "DownstreamPathTemplate": "/inventory-api/{everything}",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "ecommerce.hayugo.edu.vn",
+          "Port": 443
+        }
+      ],
+      "SwaggerKey": "Inventory"
+    },
+    {
+      "UpstreamPathTemplate": "/api/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "DownstreamScheme": "https",
+      "DownstreamPathTemplate": "/order-api/{everything}",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "ecommerce.hayugo.edu.vn",
+          "Port": 443
+        }
+      ],
+      "SwaggerKey": "Orders"
+    }
+  ],
+  "SwaggerEndPoints": [
+    {
+      "Key": "Products",
+      "Config": [
+        {
+          "Name": "Products API",
+          "Version": "v1",
+          "Url": "https://ecommerce.hayugo.edu.vn/product-swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "Discounts",
+      "Config": [
+        {
+          "Name": "Discounts API",
+          "Version": "v1",
+          "Url": "https://ecommerce.hayugo.edu.vn/discount-swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "Inventory",
+      "Config": [
+        {
+          "Name": "Inventory API",
+          "Version": "v1",
+          "Url": "https://ecommerce.hayugo.edu.vn/inventory-swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "Orders",
+      "Config": [
+        {
+          "Name": "Orders API",
+          "Version": "v1",
+          "Url": "https://ecommerce.hayugo.edu.vn/order-swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ]
+}
