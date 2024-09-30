@@ -11,6 +11,8 @@ Gateways/*/bin
 Services/*/obj
 Services/*/bin
 
+nginx.config
+
 
 
 

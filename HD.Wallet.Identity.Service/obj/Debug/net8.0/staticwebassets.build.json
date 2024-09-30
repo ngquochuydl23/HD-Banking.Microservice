@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "e3nlKAZcl4Lo8ODngwgmdZ7mrh7icvgBg4gcqDLXf/k=",
+  "Source": "HD.Wallet.Identity.Service",
+  "BasePath": "_content/HD.Wallet.Identity.Service",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

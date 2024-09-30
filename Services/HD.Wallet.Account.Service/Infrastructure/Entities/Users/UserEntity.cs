@@ -37,15 +37,15 @@ namespace HD.Wallet.Account.Service.Infrastructure.Entities.Users
 
         public string IdCardType {  get; set; }
 
-        public bool IsEkycVerfied { get; set; }
+        public bool IsEkycVerfied { get; set; } = false;
 
-        public string FaceVerificationUrl {  get; set; }
+        public string? FaceVerificationUrl {  get; set; }
 
-        public string Avatar {  get; set; }
+        public string? Avatar {  get; set; }
 
         public string HashPassword { get; set; }
 
-        public string PinPassword { get; set; }
+        public string? PinPassword { get; set; }
 
         public UserStatusEnum AccountStatus {  get; set; } = UserStatusEnum.Active;
 

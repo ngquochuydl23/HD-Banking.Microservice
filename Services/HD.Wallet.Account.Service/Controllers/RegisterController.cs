@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
 using HD.Wallet.Account.Service.Dtos;
+using HD.Wallet.Account.Service.Dtos.IdCards;
+using HD.Wallet.Account.Service.ExternalServices;
 using HD.Wallet.Account.Service.Infrastructure.Entities.Accounts;
 using HD.Wallet.Account.Service.Infrastructure.Entities.Users;
 using HD.Wallet.Shared;
 using HD.Wallet.Shared.Exceptions;
 using HD.Wallet.Shared.Seedworks;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
 
 namespace HD.Wallet.Account.Service.Controllers
 {
@@ -15,22 +18,23 @@ namespace HD.Wallet.Account.Service.Controllers
         private readonly IEfRepository<UserEntity, string> _userRepo;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IdCardExternalService _idCardExternalService;
 
         public RegisterController(
             IEfRepository<UserEntity, string> userRepo,
             IHttpContextAccessor httpContextAccessor,
             IUnitOfWork unitOfWork,
+            IdCardExternalService idCardExternalService,
             IMapper mapper) : base(httpContextAccessor)
         {
             _userRepo = userRepo;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _idCardExternalService = idCardExternalService;
         }
 
-
-
         [HttpPost]
-        public IActionResult RequestOpenAccount([FromBody] RequestOpenAccountDto body)
+        public async Task<IActionResult> RequestOpenAccount([FromBody] RequestOpenAccountDto body)
         {
 
             var account = new AccountEntity();
@@ -45,19 +49,54 @@ namespace HD.Wallet.Account.Service.Controllers
                 BankAccountId = body.PhoneNumber,
                 IdCardNo = body.IdCardNo,
             };
-
-            ICollection<AccountEntity> accounts = new HashSet<AccountEntity>();
-            accounts.Add(account);
-
+            account.TransactionLimit = 10000000;
+            account.LinkedAccountId = null;
 
             var user = new UserEntity();
-            user.FullName = "Nguyễn Quốc Huy";
-            user.PhoneNumber = "0868684961";
-            user.Accounts = accounts;
-            user.Email = "nguyenquochuydl123@gmail.com";
+            user.FullName = body.FullName;
+            user.PhoneNumber = body.PhoneNumber;
+            user.DateOfBirth = body.DateOfBirth;
+            user.Accounts = new HashSet<AccountEntity>() { account };
+            user.Email = body.Email;
             user.Sex = 1;
-           
+            user.IsEkycVerfied = true;
+            user.HashPassword = BCrypt.Net.BCrypt.EnhancedHashPassword(body.Password, 13);
+            user.FaceVerificationUrl = body.FaceVerificationUrl;
+            user.AccountStatus = UserStatusEnum.Active;
+            user.Address = new AddressValueObject()
+            {
+                Street = body.Address.Street,
+                District = body.Address.District,
+                ProvinceOrCity = body.Address.ProvinceOrCity,
+                WardOrCommune = body.Address.WardOrCommune
+            };
 
+            user.Work = new WorkValueObject()
+            {
+                Occupation = "Lập trình viên",
+                Position = "Chuyên viên cao cấp"
+            };
+
+            try
+            {
+                ExternalResponseIdCardDto idCardResponse = await _idCardExternalService.GetIdCardById(body.IdCardNo);
+                IdCardDto idCardDetail = idCardResponse.IdCard;
+
+                user.IdCardNo = idCardDetail.Id;
+                user.Nationality = idCardDetail.Nationality;
+                user.PlaceOfOrigin = idCardDetail.PlaceOfOrigin;
+                user.PlaceOfResidence = idCardDetail.PlaceOfResidence;
+                
+                user.FrontIdCardUrl = idCardResponse.FrontUrl;
+                user.BackIdCardUrl = idCardResponse.BackUrl;
+
+                user.IdCardType = idCardResponse.Type;
+            }
+            catch (Exception ex) { 
+
+            }
+
+            user = _userRepo.Insert(user);
             return Ok(user);
         }
     }

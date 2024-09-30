@@ -2,8 +2,8 @@
 {
     public class WorkValueObject
     {
-        public string Occupation {  get; set; }
+        public string? Occupation {  get; set; }
 
-        public string Position {  get; set; }
+        public string? Position {  get; set; }
     }
 }

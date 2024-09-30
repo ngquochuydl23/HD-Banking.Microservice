@@ -14,24 +14,10 @@
 
         public string IdCardNo { get; set; }
 
-        public string Nationality { get; set; }
-
-        public string PlaceOfOrigin { get; set; }
-
-        public string PlaceOfResidence { get; set; }
-
-        public DateTime DateOfExpiry { get; set; }
-
-        public string FrontIdCardUrl { get; set; }
-
-        public string BackIdCardUrl { get; set; }
-
-        public string IdCardType { get; set; }
-
-        public string FaceVerificationUrl { get; set; }
+        public string? FaceVerificationUrl { get; set; }
 
         public string Password { get; set; }
 
-        public AddressDto Address { get; set; }
+        public AddressDto? Address { get; set; }
     }
 }

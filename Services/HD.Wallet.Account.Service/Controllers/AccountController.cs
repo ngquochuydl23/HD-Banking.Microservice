@@ -5,10 +5,12 @@ using HD.Wallet.Account.Service.Infrastructure.Entities.Users;
 using HD.Wallet.Shared;
 using HD.Wallet.Shared.Exceptions;
 using HD.Wallet.Shared.Seedworks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HD.Wallet.Account.Service.Controllers
 {
+    [Authorize]
     [Route("account-api/[controller]")]
     public class AccountController : BaseController
     {
@@ -51,6 +53,17 @@ namespace HD.Wallet.Account.Service.Controllers
                     ?? throw new AppException("Account not found");
 
             return Ok(account);
+        }
+
+        [HttpGet("balance")]
+        public IActionResult GetAccountBalance([FromQuery] string accountId)
+        {
+            var account = _accountRepo
+                .GetQueryableNoTracking()
+                .FirstOrDefault(x => x.Id.Equals(accountId) && x.UserId.Equals(LoggingUserId))
+                    ?? throw new AppException("Account not found");
+
+            return Ok(account.AccountBank);
         }
 
         [HttpPost]

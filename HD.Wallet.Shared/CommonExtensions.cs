@@ -18,6 +18,7 @@ using Microsoft.Extensions.Hosting;
 using Redis.OM;
 using Confluent.Kafka;
 
+
 namespace HD.Wallet.Shared
 {
 	public static class CommonExtensions
@@ -35,7 +36,8 @@ namespace HD.Wallet.Shared
 			{
 				options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 			});
-			services
+
+            services
 				 .AddTransient<IHttpContextAccessor, HttpContextAccessor>()
 				 .AddDefaultOpenApi(configuration)
 				 .AddDefaultAuthentication(configuration)
@@ -206,7 +208,7 @@ namespace HD.Wallet.Shared
 			return app;
 		}
 
-		private static string GetRequiredValue(this IConfiguration configuration, string name) =>
+		public static string GetRequiredValue(this IConfiguration configuration, string name) =>
 			configuration[name] ?? throw new InvalidOperationException($"Configuration missing value for: {(configuration is IConfigurationSection s ? s.Path + ":" + name : name)}");
 	}
 }

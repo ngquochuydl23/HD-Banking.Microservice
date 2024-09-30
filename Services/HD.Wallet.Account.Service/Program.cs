@@ -1,6 +1,8 @@
 using HD.Wallet.Account.Service.Extensions;
+using HD.Wallet.Account.Service.ExternalServices;
 using HD.Wallet.Account.Service.Infrastructure;
 using HD.Wallet.Shared;
+using HD.Wallet.Shared.Interceptors;
 
 namespace HD.Wallet.Account.Service
 {
@@ -14,8 +16,28 @@ namespace HD.Wallet.Account.Service
 			   .AddWebApiConfiguration(builder.Configuration)
 			   .AddDbContext<HdWalletAccountDbContext>(builder.Configuration)
 			   .AddAutoMapperConfig<AutoMapperProfile>();
+            
 
-			var app = builder.Build();
+            builder.Services.AddTransient<RequestInterceptorHandler>();
+            builder.Services
+                .AddHttpClient("IdCardExternalApi")
+				.AddHttpMessageHandler<RequestInterceptorHandler>();
+
+       
+            builder.Services.AddTransient<IdCardExternalService>();
+
+
+            builder.Services.AddAuthentication("Bearer")
+               .AddJwtBearer("Bearer", options =>
+               {
+                   options.Authority = "https://localhost:8300"; // Use your IdentityServer URI
+                   options.RequireHttpsMetadata = false;
+                   options.Audience = "api1";  // Match the scope of your API
+               });
+
+
+
+            var app = builder.Build();
 			app.AddCommonApplicationBuilder();
 			app.Run();
 		}

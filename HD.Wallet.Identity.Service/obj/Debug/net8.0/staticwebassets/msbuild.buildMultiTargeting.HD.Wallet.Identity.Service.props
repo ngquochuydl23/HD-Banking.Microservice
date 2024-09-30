@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\HD.Wallet.Identity.Service.props" />
+</Project>

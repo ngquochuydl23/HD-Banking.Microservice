@@ -33,7 +33,7 @@ namespace HD.Wallet.Shared
                 Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" }
             };
 
-            
+
         }
     }
 }

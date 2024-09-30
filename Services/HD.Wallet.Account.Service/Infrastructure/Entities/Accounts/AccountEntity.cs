@@ -17,7 +17,7 @@ namespace HD.Wallet.Account.Service.Infrastructure.Entities.Accounts
 
         public double WalletBalance {  get; set; }
 
-        public string LinkedAccountId { get; set; }
+        public string? LinkedAccountId { get; set; }
 
         public int TransactionLimit {  get; set; }
 

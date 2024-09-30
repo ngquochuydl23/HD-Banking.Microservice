@@ -1,0 +1,12 @@
+[
+  {
+    "ContainingType": "IdentityService.Controllers.HealthCheckController",
+    "Method": "Get",
+    "RelativePath": "HealthCheck",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  }
+]

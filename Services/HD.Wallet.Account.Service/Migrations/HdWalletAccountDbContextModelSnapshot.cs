@@ -49,7 +49,6 @@ namespace HD.Wallet.Account.Service.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("LinkedAccountId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("TransactionLimit")
@@ -78,7 +77,6 @@ namespace HD.Wallet.Account.Service.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Avatar")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("BackIdCardUrl")
@@ -99,7 +97,6 @@ namespace HD.Wallet.Account.Service.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("FaceVerificationUrl")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("FrontIdCardUrl")
@@ -140,7 +137,6 @@ namespace HD.Wallet.Account.Service.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("PinPassword")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PlaceOfOrigin")
@@ -210,19 +206,15 @@ namespace HD.Wallet.Account.Service.Migrations
                                 .HasColumnType("text");
 
                             b1.Property<string>("District")
-                                .IsRequired()
                                 .HasColumnType("text");
 
                             b1.Property<string>("ProvinceOrCity")
-                                .IsRequired()
                                 .HasColumnType("text");
 
                             b1.Property<string>("Street")
-                                .IsRequired()
                                 .HasColumnType("text");
 
                             b1.Property<string>("WardOrCommune")
-                                .IsRequired()
                                 .HasColumnType("text");
 
                             b1.HasKey("UserEntityId");
@@ -239,11 +231,9 @@ namespace HD.Wallet.Account.Service.Migrations
                                 .HasColumnType("text");
 
                             b1.Property<string>("Occupation")
-                                .IsRequired()
                                 .HasColumnType("text");
 
                             b1.Property<string>("Position")
-                                .IsRequired()
                                 .HasColumnType("text");
 
                             b1.HasKey("UserEntityId");
