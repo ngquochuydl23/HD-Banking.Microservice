@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using Ocelot.Values;
+using System;
 
 namespace Clothes.GatewayApi
 {
@@ -18,9 +19,12 @@ namespace Clothes.GatewayApi
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen();
 
+        
 
-			builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
-			builder.Services.AddOcelot(builder.Configuration);
+            builder.Configuration.AddJsonFile($"ocelot.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                                 .AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
+
+            builder.Services.AddOcelot(builder.Configuration);
 			builder.Services.AddSwaggerForOcelot(builder.Configuration);
 
 

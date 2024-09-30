@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HD.Wallet.Transaction.Service.Controllers
 {
-
+    [Route("transaction-api/[controller]")]
     public class TransactionController : BaseController
     {
         private readonly IEfRepository<TransactionEntity, string> _transactionRepo;

@@ -8,8 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HD.Wallet.Account.Service.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+    [Route("account-api/[controller]")]
     public class ContactController : BaseController
     {
 

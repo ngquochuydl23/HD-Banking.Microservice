@@ -1,0 +1,55 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:8000"
+  },
+  "Routes": [
+    {
+      "UpstreamPathTemplate": "/api/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/account-api/{everything}",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "hdbanking.pgonevn.com",
+          "Port": 443
+        }
+      ],
+      "SwaggerKey": "Accounts"
+    },
+    {
+      "UpstreamPathTemplate": "/api/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/transaction-api/{everything}",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "hdbanking.pgonevn.com",
+          "Port": 443
+        }
+      ],
+      "SwaggerKey": "Transactions"
+    }
+  ],
+  "SwaggerEndPoints": [
+    {
+      "Key": "Accounts",
+      "Config": [
+        {
+          "Name": "Account API",
+          "Version": "v1",
+          "Url": "http://localhost:8100/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "Transactions",
+      "Config": [
+        {
+          "Name": "Transaction API",
+          "Version": "v1",
+          "Url": "http://localhost:8200/swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ]
+}

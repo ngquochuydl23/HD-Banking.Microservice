@@ -5,11 +5,11 @@ services:
     container_name:  hd-wallet.gateways-api
     build:
       context: ./
-      dockerfile: Gateways/Clothes.GatewayApi/Dockerfile
+      dockerfile: Gateways/HD.Wallet.Gateway/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: Staging
     ports:
-      - 9000:9000
+      - 8000:8000
     restart: always
 
   hd-wallet.account-api:

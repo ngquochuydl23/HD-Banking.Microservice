@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HD.Wallet.Account.Service.Controllers
 {
+    [Route("account-api/[controller]")]
     public class UserController : BaseController
     {
         private readonly IEfRepository<UserEntity, string> _userRepo;
