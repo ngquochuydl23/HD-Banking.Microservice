@@ -22,4 +22,4 @@ RUN dotnet publish "./HD.Wallet.Gateway.csproj" -c $BUILD_CONFIGURATION -o /app/
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "HD.Wallet.Gateway.GatewayApi.dll"]
+ENTRYPOINT ["dotnet", "HD.Wallet.Gateway.dll"]
