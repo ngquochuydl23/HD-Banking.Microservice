@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\HD.Wallet.Identity.Service.props" />
-</Project>
