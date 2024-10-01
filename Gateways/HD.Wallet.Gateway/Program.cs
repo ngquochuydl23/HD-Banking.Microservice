@@ -19,11 +19,15 @@ namespace Clothes.GatewayApi
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen();
 
-        
 
-            builder.Configuration
-				.AddJsonFile($"ocelot.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
-				.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
+
+            if (builder.Environment.IsProduction())
+            {
+                builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
+            } else
+			{
+                builder.Configuration.AddJsonFile($"ocelot.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
+            }
 
             builder.Services.AddOcelot(builder.Configuration);
 			builder.Services.AddSwaggerForOcelot(builder.Configuration);

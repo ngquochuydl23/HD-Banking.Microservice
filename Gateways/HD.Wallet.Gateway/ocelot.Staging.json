@@ -1,6 +1,6 @@
 {
   "GlobalConfiguration": {
-    "BaseUrl": "http://localhost:8000",
+    "BaseUrl": "https://hdbanking.pgonevn.com/",
     "CorsPolicy": {
       "AllowedOrigins": [ "*" ],
       "AllowedMethods": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
