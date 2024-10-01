@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "http": {
+    "http:dev": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
@@ -12,7 +12,8 @@
     },
     "http:production": {
       "commandName": "Project",
-      "launchBrowser": false,
+      "launchBrowser": true,
+      "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production"
       },

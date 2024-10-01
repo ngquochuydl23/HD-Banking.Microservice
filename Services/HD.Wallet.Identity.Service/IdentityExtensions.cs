@@ -86,6 +86,8 @@ namespace HD.Wallet.Identity.Service
                 .AddInMemoryClients(clients)
                 .AddInMemoryApiResources(apiResources)
                 .AddInMemoryApiScopes(apiScopes)
+                //.AddInMemoryClients(Config.GetClients()) // Add clients
+                .AddInMemoryPersistedGrants()
                 .AddDeveloperSigningCredential();
             return services;
         }

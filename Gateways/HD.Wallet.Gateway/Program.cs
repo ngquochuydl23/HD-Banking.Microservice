@@ -21,14 +21,24 @@ namespace Clothes.GatewayApi
 
         
 
-            builder.Configuration.AddJsonFile($"ocelot.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
-                                 .AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
+            builder.Configuration
+				.AddJsonFile($"ocelot.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+				.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
 
             builder.Services.AddOcelot(builder.Configuration);
 			builder.Services.AddSwaggerForOcelot(builder.Configuration);
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("default", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader()
+                           .AllowCredentials();
+                });
+            });
 
-
-			var app = builder.Build();
+            var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
 			if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
@@ -44,11 +54,18 @@ namespace Clothes.GatewayApi
 			}
 
 			app.UseHttpsRedirection();
-		
 
+            app.UseRouting();
 
-			app.UseOcelot();
-			app.UseAuthorization();
+            // Add Ocelot middleware
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+
+            // Configure Ocelot
+            app.UseOcelot().Wait();
+            app.UseAuthorization();
 			app.MapControllers();
 			app.Run();
 		}

@@ -12,7 +12,7 @@
   },
   "Routes": [
     {
-      "UpstreamPathTemplate": "/account-api/{everything}",
+      "UpstreamPathTemplate": "/api/account/{everything}",
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
       "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/account-api/{everything}",
@@ -26,7 +26,7 @@
       "CorsPolicy": "default"
     },
     {
-      "UpstreamPathTemplate": "/transaction-api/{everything}",
+      "UpstreamPathTemplate": "/api/transaction/{everything}",
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
       "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/transaction-api/{everything}",

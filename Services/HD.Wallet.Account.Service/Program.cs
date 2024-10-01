@@ -26,20 +26,10 @@ namespace HD.Wallet.Account.Service
        
             builder.Services.AddTransient<IdCardExternalService>();
 
-
-            builder.Services.AddAuthentication("Bearer")
-               .AddJwtBearer("Bearer", options =>
-               {
-                   options.Authority = "https://localhost:8300"; // Use your IdentityServer URI
-                   options.RequireHttpsMetadata = false;
-                   options.Audience = "api1";  // Match the scope of your API
-               });
-
-
-
             var app = builder.Build();
+
 			app.AddCommonApplicationBuilder();
-			app.Run();
+            app.Run();
 		}
 	}
 }

@@ -17,6 +17,8 @@ using HD.Wallet.Shared.Settings.JwtSetting;
 using Microsoft.Extensions.Hosting;
 using Redis.OM;
 using Confluent.Kafka;
+using IdentityServer4.Models;
+using IdentityModel.Client;
 
 
 namespace HD.Wallet.Shared
@@ -138,14 +140,36 @@ namespace HD.Wallet.Shared
 			{
 				return services;
 			}
-			var apiName = section.GetRequiredValue("ApiName");
-			var authority = section.GetRequiredValue("Authority");
 
+			services
+				.AddAuthentication("Bearer")
+				.AddJwtBearer(options =>
+				{
+					options.Authority = configuration["Identity:Authority"];
+					options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidAudiences = configuration.GetSection("Identity:ValidAudiences").Get<string[]>(),
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidAudience = configuration["Identity:ClientId"]
+                    };
 
-			return services;
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnAuthenticationFailed = JwtEventHandler.HandleAuthenticationFailed,
+                        OnChallenge = JwtEventHandler.OnChallenge,
+                        OnForbidden = JwtEventHandler.OnForbidden
+                    };
+                });
+
+            return services;
 		}
+       
 
-		public static IServiceCollection AddJwtExtension(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddJwtExtension(this IServiceCollection services, IConfiguration configuration)
 		{
 			var section = configuration.GetSection("Identity");
 			if (!section.Exists())
@@ -193,18 +217,14 @@ namespace HD.Wallet.Shared
 				app.UseSwaggerUI();
 			}
 
-			app.UseCors(x => x
-				.AllowAnyHeader()
-				.AllowAnyMethod()
-				.SetIsOriginAllowed(origin => true)
-				.AllowCredentials());
-
 			app.UseMiddleware<ErrorHandlingMiddleWare>();
 			app.UseHttpsRedirection();
-			app.UseAuthentication();
+            app.UseAuthentication();
 			app.UseAuthorization();
 			app.MapControllers();
 			app.Run();
+
+
 			return app;
 		}
 
