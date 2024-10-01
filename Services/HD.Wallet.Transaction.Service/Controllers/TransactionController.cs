@@ -8,10 +8,12 @@ using HD.Wallet.Transaction.Service.Dtos.Transfers;
 using HD.Wallet.Transaction.Service.Dtos.Withdrawls;
 using HD.Wallet.Transaction.Service.FilterQueries;
 using HD.Wallet.Transaction.Service.Infrastructure.Transactions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HD.Wallet.Transaction.Service.Controllers
 {
+    [Authorize]
     [Route("transaction-api/[controller]")]
     public class TransactionController : BaseController
     {
@@ -81,7 +83,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
 
             // push notification for B
             // push into job
-            return Ok(body);
+            return Ok(transactionA);
         }
 
         [HttpPost("withdrawal")]
