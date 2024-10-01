@@ -3,7 +3,7 @@
 namespace IdentityService.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("identity-api/[controller]")]
     public class HealthCheckController : ControllerBase
     {
         [HttpGet]
