@@ -37,14 +37,13 @@ namespace HD.Wallet.Identity.Service
                     {
                         ClientId = client.GetValue<string>("ClientId"),
                         ClientName = client.GetValue<string>("ClientName"),
-                        AllowedGrantTypes = GrantTypes.ClientCredentials.ToList(),
+                        AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
                         ClientSecrets = clientSecrets,
                         AllowedScopes = client
                             .GetSection("AllowedScopes")
                             .GetChildren()
                             .Select(x => x.Value)
                             .ToList(),
-
                         //AllowOfflineAccess = true,  // Enables refresh tokens
                         //RefreshTokenExpiration = TokenExpiration.Sliding,  // Sliding expiration
                         //AbsoluteRefreshTokenLifetime = 2592000,  // 30 days
@@ -86,9 +85,13 @@ namespace HD.Wallet.Identity.Service
                 .AddInMemoryClients(clients)
                 .AddInMemoryApiResources(apiResources)
                 .AddInMemoryApiScopes(apiScopes)
-                //.AddInMemoryClients(Config.GetClients()) // Add clients
-                .AddInMemoryPersistedGrants()
-                .AddDeveloperSigningCredential();
+                .AddInMemoryIdentityResources(new IdentityResource[]
+                {
+                    new IdentityResources.OpenId(),
+                })
+                //.AddInMemoryPersistedGrants()
+                .AddDeveloperSigningCredential()
+                .AddProfileService<CustomProfileService>();
             return services;
         }
     }

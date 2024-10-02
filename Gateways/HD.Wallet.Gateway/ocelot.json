@@ -1,6 +1,6 @@
 {
   "GlobalConfiguration": {
-    "BaseUrl": "http://localhost:8000",
+    "BaseUrl": "https://hdbanking.pgonevn.com/",
     "CorsPolicy": {
       "AllowedOrigins": [ "*" ],
       "AllowedMethods": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
@@ -12,31 +12,45 @@
   },
   "Routes": [
     {
-      "UpstreamPathTemplate": "/account-api/{everything}",
+      "UpstreamPathTemplate": "/api/account/{everything}",
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamPathTemplate": "/account-api/{everything}",
       "DownstreamHostAndPorts": [
         {
-          "Host": "127.0.0.1",
-          "Port": 8100
+          "Host": "hdbanking.pgonevn.com",
+          "Port": 443
         }
       ],
       "SwaggerKey": "Accounts",
       "CorsPolicy": "default"
     },
     {
-      "UpstreamPathTemplate": "/transaction-api/{everything}",
+      "UpstreamPathTemplate": "/api/transaction/{everything}",
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamPathTemplate": "/transaction-api/{everything}",
       "DownstreamHostAndPorts": [
         {
-          "Host": "127.0.0.1",
-          "Port": 8200
+          "Host": "hdbanking.pgonevn.com",
+          "Port": 443
         }
       ],
       "SwaggerKey": "Transactions",
+      "CorsPolicy": "default"
+    },
+    {
+      "UpstreamPathTemplate": "/api/identity/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "DownstreamScheme": "https",
+      "DownstreamPathTemplate": "/identity-api/{everything}",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "hdbanking.pgonevn.com",
+          "Port": 443
+        }
+      ],
+      "SwaggerKey": "Identity",
       "CorsPolicy": "default"
     }
   ],
@@ -47,7 +61,7 @@
         {
           "Name": "Account API",
           "Version": "v1",
-          "Url": "http://localhost:8100/swagger/v1/swagger.json"
+          "Url": "https://hdbanking.pgonevn.com/account-swagger/v1/swagger.json"
         }
       ]
     },
@@ -57,7 +71,17 @@
         {
           "Name": "Transaction API",
           "Version": "v1",
-          "Url": "http://localhost:8200/swagger/v1/swagger.json"
+          "Url": "https://hdbanking.pgonevn.com/transaction-swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "Identity",
+      "Config": [
+        {
+          "Name": "Identity API",
+          "Version": "v1",
+          "Url": "https://hdbanking.pgonevn.com/identity-swagger/v1/swagger.json"
         }
       ]
     }

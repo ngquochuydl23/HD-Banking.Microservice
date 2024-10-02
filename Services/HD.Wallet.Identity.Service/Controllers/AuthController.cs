@@ -22,21 +22,15 @@ namespace HD.Wallet.Identity.Service.Controllers
         [HttpPost("sign-in")]
         public async Task<IActionResult> Post([FromBody] RequestLoginDto body)
         {
-            // Validate the login request
-            if (body == null || string.IsNullOrEmpty(body.PhoneNumber) || string.IsNullOrEmpty(body.Password))
-            {
-                return BadRequest("Invalid login request.");
-            }
-
-            // Request token from IdentityServer
+ 
             var tokenResponse = await RequestToken(body.PhoneNumber, body.Password);
             
             if (tokenResponse.IsError)
             {
-                return BadRequest(tokenResponse.Error); // Return error from IdentityServer
+                return BadRequest(tokenResponse.Error);
             }
 
-            return Ok(tokenResponse.AccessToken); // Return JWT token
+            return Ok(tokenResponse);
         }
 
         private async Task<TokenResponse> RequestToken(string username, string password)
@@ -51,13 +45,9 @@ namespace HD.Wallet.Identity.Service.Controllers
 
             // 
 
-            var tokenResponse = await _httpClient.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
-            {
-                Address = discoveryDocument.TokenEndpoint,
-                ClientId = "local-dev", // The client_id from Config.cs
-                ClientSecret = "yoursecretvalue",
-                Scope = "account transaction" // Adjust scopes based on your configuration
-            });
+            // request token
+            var tokenClient = new TokenClient(disco.TokenEndpoint, "ro.client", "secret");
+            var tokenResponse = await tokenClient.RequestResourceOwnerPasswordAsync("alice", "password", "api1")
 
 
             return tokenResponse;

@@ -38,6 +38,20 @@
       ],
       "SwaggerKey": "Transactions",
       "CorsPolicy": "default"
+    },
+    {
+      "UpstreamPathTemplate": "/api/identity/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "DownstreamScheme": "https",
+      "DownstreamPathTemplate": "/identity-api/{everything}",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "hdbanking.pgonevn.com",
+          "Port": 443
+        }
+      ],
+      "SwaggerKey": "Identity",
+      "CorsPolicy": "default"
     }
   ],
   "SwaggerEndPoints": [
@@ -58,6 +72,16 @@
           "Name": "Transaction API",
           "Version": "v1",
           "Url": "https://hdbanking.pgonevn.com/transaction-swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "Identity",
+      "Config": [
+        {
+          "Name": "Identity API",
+          "Version": "v1",
+          "Url": "https://hdbanking.pgonevn.com/identity-swagger/v1/swagger.json"
         }
       ]
     }
