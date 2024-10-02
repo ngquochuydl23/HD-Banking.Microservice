@@ -2,6 +2,7 @@
 using HD.Wallet.Shared.Seedworks;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using HD.Wallet.Account.Service.Infrastructure.Entities.Contacts;
 
 namespace HD.Wallet.Account.Service.Infrastructure.Entities.Users
 {
@@ -49,8 +50,12 @@ namespace HD.Wallet.Account.Service.Infrastructure.Entities.Users
 
         public UserStatusEnum AccountStatus {  get; set; } = UserStatusEnum.Active;
 
-        public ICollection<AccountEntity> Accounts { get; set; } = new HashSet<AccountEntity>(); 
-        
+        public ICollection<AccountEntity> Accounts { get; set; } = new HashSet<AccountEntity>();
+
+        public ICollection<ContactEntity> Contacts { get; set; } = new HashSet<ContactEntity>();
+
+        public ICollection<ContactEntity> ReferencedContacts { get; set; } = new HashSet<ContactEntity>();
+
         public AddressValueObject Address { get; set; }
 
         public WorkValueObject Work { get; set; }

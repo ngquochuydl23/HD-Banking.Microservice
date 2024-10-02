@@ -133,5 +133,11 @@ namespace HD.Wallet.Account.Service.Controllers
 
             return Ok(account);
         }
+
+        [HttpPost("main/generate-qr-code")]
+        public IActionResult GenerateQrCode()
+        {
+            return Ok();
+        }
     }
 }
