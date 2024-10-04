@@ -1,6 +1,7 @@
 using HD.Wallet.Account.Service.Extensions;
 using HD.Wallet.Account.Service.ExternalServices;
 using HD.Wallet.Account.Service.Infrastructure;
+using HD.Wallet.Account.Service.Validators;
 using HD.Wallet.Shared;
 using HD.Wallet.Shared.Interceptors;
 
@@ -25,7 +26,7 @@ namespace HD.Wallet.Account.Service
 
        
             builder.Services.AddTransient<IdCardExternalService>();
-
+			builder.Services.AddScoped<RequestOpenAccountValidator>();
             var app = builder.Build();
 
 			app.AddCommonApplicationBuilder();
