@@ -21,7 +21,7 @@ namespace HD.Wallet.Shared.Settings.JwtSetting
             return obj.Claims;
         }
 
-        public string GenerateToken(long id, string role)
+        public string GenerateToken(string id, string role, string phoneNumber, string email)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var signingCredentials = new SigningCredentials(
@@ -31,13 +31,13 @@ namespace HD.Wallet.Shared.Settings.JwtSetting
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] {
-                    new Claim("id", id.ToString()),
+                    new Claim("id", id),
+                    new Claim(ClaimTypes.MobilePhone, phoneNumber),
+                    new Claim(ClaimTypes.Email, email),
                     new Claim(ClaimTypes.Role, role)
                 }),
-                Expires = DateTime.UtcNow.AddDays(_jwtSettings.ExpiryDays),
-                SigningCredentials = signingCredentials,
-                Audience = _jwtSettings.Audience,
-                Issuer = _jwtSettings.Issuer
+                Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
+                SigningCredentials = signingCredentials
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);

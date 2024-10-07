@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using HD.Wallet.Account.Service.Dtos;
+using HD.Wallet.Account.Service.Dtos.Users;
 using HD.Wallet.Account.Service.Infrastructure.Entities.Users;
 using HD.Wallet.Shared;
+using HD.Wallet.Shared.Exceptions;
 using HD.Wallet.Shared.Seedworks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -25,10 +28,22 @@ namespace HD.Wallet.Account.Service.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public IEnumerable<string> Get()
+        [HttpPost("validate")]
+        public async Task<IActionResult> ValidateUser([FromBody] RequestValidateUserDto body)
         {
-            return new string[] { "value1", "value2" };
+            var user = _userRepo
+              .GetQueryable()
+              .FirstOrDefault(x => x.PhoneNumber.Equals(body.PhoneNumber))
+                ?? throw new AppException("User not found");
+
+
+            if (!BCrypt.Net.BCrypt.Verify(body.Password, user.HashPassword))
+            {
+                throw new AppException("Password is incorrect");
+            }
+
+            return Ok(_mapper.Map<UserDto>(user));
+
         }
     }
 }

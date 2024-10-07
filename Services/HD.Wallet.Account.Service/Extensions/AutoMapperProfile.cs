@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using HD.Wallet.Account.Service.Dtos.Users;
+using HD.Wallet.Account.Service.Infrastructure.Entities.Users;
 
 namespace HD.Wallet.Account.Service.Extensions
 {
@@ -6,7 +8,7 @@ namespace HD.Wallet.Account.Service.Extensions
 	{
 		public AutoMapperProfile()
 		{
-			//CreateMap<DiscountEntity, DiscountDto>();
+			CreateMap<UserEntity, UserDto>();
 			//CreateMap<DiscountRuleEntity, DiscountRuleDto>();
 		}
 	}

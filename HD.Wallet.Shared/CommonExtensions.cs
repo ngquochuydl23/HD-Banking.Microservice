@@ -135,36 +135,31 @@ namespace HD.Wallet.Shared
 
 		public static IServiceCollection AddDefaultAuthentication(this IServiceCollection services, IConfiguration configuration)
 		{
-			var section = configuration.GetSection("Identity");
-			if (!section.Exists())
-			{
-				return services;
-			}
+            var identifierSection = configuration.GetSection("Identity");
 
-			services
-				.AddAuthentication("Bearer")
-				.AddJwtBearer(options =>
-				{
-					options.Authority = configuration["Identity:Authority"];
-					options.RequireHttpsMetadata = false;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidAudiences = configuration.GetSection("Identity:ValidAudiences").Get<string[]>(),
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidAudience = configuration["Identity:ClientId"]
-                    };
+            if (!identifierSection.Exists())
+                return services;
 
-                    options.Events = new JwtBearerEvents
-                    {
-                        OnAuthenticationFailed = JwtEventHandler.HandleAuthenticationFailed,
-                        OnChallenge = JwtEventHandler.OnChallenge,
-                        OnForbidden = JwtEventHandler.OnForbidden
-                    };
-                });
+            services
+              .AddAuthentication(option =>
+              {
+                  option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                  option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                  option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+              })
+              .AddJwtBearer(options =>
+              {
+                  var secretKey = identifierSection.GetRequiredValue("SecretKey");
 
+                  options.TokenValidationParameters = new TokenValidationParameters
+                  {
+                      ValidateIssuer = false,
+                      ValidateAudience = false,
+                      ValidateLifetime = true,
+                      ValidateIssuerSigningKey = true,
+                      IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+                  };
+              });
             return services;
 		}
        

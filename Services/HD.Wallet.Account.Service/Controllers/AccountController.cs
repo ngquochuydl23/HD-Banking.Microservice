@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using HD.Wallet.Account.Service.Dtos;
 using HD.Wallet.Account.Service.Dtos.Accounts;
 using HD.Wallet.Account.Service.Infrastructure.Entities.Accounts;
 using HD.Wallet.Account.Service.Infrastructure.Entities.Users;

@@ -92,7 +92,7 @@ namespace HD.Wallet.Account.Service.Controllers
                 user.Email = body.Email;
                 user.Sex = 1;
                 user.IsEkycVerfied = true;
-                user.HashPassword = BCrypt.Net.BCrypt.EnhancedHashPassword(body.Password, 13);
+                user.HashPassword = BCrypt.Net.BCrypt.HashPassword(body.Password);
                 user.FaceVerificationUrl = body.FaceVerificationUrl;
                 user.AccountStatus = UserStatusEnum.Active;
 

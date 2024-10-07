@@ -4,7 +4,7 @@ namespace HD.Wallet.Shared.Settings.JwtSetting
 {
     public interface IJwtExtension
     {
-        string GenerateToken(long id, string role);
+        string GenerateToken(string id, string role, string phoneNumber, string email);
 
         IEnumerable<Claim> DecodeToken(string token);
     }

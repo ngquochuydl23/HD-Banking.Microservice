@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HD.Wallet.Shared
+namespace HD.Wallet.Shared.BaseDtos
 {
     public class Dto<TId>
     {

@@ -10,6 +10,13 @@
 		<GenerateRuntimeConfigurationFiles>True</GenerateRuntimeConfigurationFiles>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <Compile Remove="ExternalServices\**" />
+	  <Content Remove="ExternalServices\**" />
+	  <EmbeddedResource Remove="ExternalServices\**" />
+	  <None Remove="ExternalServices\**" />
+	</ItemGroup>
+
 
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="12.0.1" />
@@ -49,11 +56,6 @@
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 		</Content>
-	</ItemGroup>
-
-
-	<ItemGroup>
-	  <Folder Include="ExternalServices\" />
 	</ItemGroup>
 
 </Project>
