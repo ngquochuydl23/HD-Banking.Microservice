@@ -28,7 +28,7 @@ namespace HD.Wallet.Account.Service.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("validate")]
+        [HttpPost("Validate")]
         public async Task<IActionResult> ValidateUser([FromBody] RequestValidateUserDto body)
         {
             var user = _userRepo
@@ -46,7 +46,7 @@ namespace HD.Wallet.Account.Service.Controllers
 
         }
 
-        [HttpGet("find-user-by-phone")]
+        [HttpGet("FindUserByPhone")]
         public async Task<IActionResult> FindUserByPhone([FromQuery] string phone)
         {
             var user = _userRepo

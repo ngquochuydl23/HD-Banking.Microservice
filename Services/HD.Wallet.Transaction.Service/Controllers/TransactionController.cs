@@ -60,37 +60,60 @@ namespace HD.Wallet.Transaction.Service.Controllers
             return Ok(transaction);
         }
 
-        [HttpPost("transfer")]
-        public async Task<IActionResult> Transfer([FromBody] RequestTransferDto body)
+        [HttpPost("InteralTransfer")]
+        public async Task<IActionResult> InternalTransfer([FromBody] RequestTransferDto body)
         {
-            
-            var account = await _accountExternalService.GetAccountByBankAccountNo(body.ReceiverAccountId, AccessToken);
-
-            var transactionA = new TransactionEntity()
+            using (_unitOfWork.Begin())
             {
-                SenderAccountId = body.SenderAccountId,
-                ReceiverAccountId = body.ReceiverAccountId,
-                TransactionDate = DateTime.UtcNow,
-                TransactionType = TransactionTypeEnum.Transfer,
-                TransactionStatus = TransactionStatusEnum.Pending,
-                TransferContent = "NGUYEN QUOC HUY chuyen khoan"
-            };
+                if (body.SourceAccountId.Equals(body.DestinationAccoutId))
+                {
+                    throw new AppException("Source bank and destination bank is the same");
+                }
 
-            // push notification for A
-            // push into job
-            var transactionB = new TransactionEntity()
-            {
-                SenderAccountId = body.SenderAccountId,
-                ReceiverAccountId = body.ReceiverAccountId,
-                TransactionDate = DateTime.UtcNow,
-                TransactionType = TransactionTypeEnum.Transfer,
-                TransactionStatus = TransactionStatusEnum.Pending,
-                TransferContent = "NGUYEN QUOC HUY chuyen khoan"
-            };
+                var sourceBank = await _accountExternalService.GetAccountById(body.SourceAccountId)
+                    ?? throw new AppException("Source account not found");
 
-            // push notification for B
-            // push into job
-            return Ok(transactionA);
+                if (!sourceBank.UserId.Equals(LoggingUserId))
+                {
+                    throw new AppException("The source account is not yours");
+                }
+
+                var destinationBank = await _accountExternalService.GetAccountById(body.DestinationAccoutId)
+                    ?? throw new AppException("Destination account not found");
+
+
+                if (body.TransferAmount > sourceBank.WalletBalance)
+                {
+                    throw new AppException("Balance is not enough to transfer");
+                }
+
+
+                var transactionA = new TransactionEntity()
+                {
+                    SenderAccountId = body.SourceAccountId,
+                    ReceiverAccountId = body.DestinationAccoutId,
+                    TransactionDate = DateTime.UtcNow,
+                    TransactionType = TransactionTypeEnum.Transfer,
+                    TransactionStatus = TransactionStatusEnum.Pending,
+                    TransferContent = sourceBank.AccountBank.BankOwnerName + " chuyen khoan"
+                };
+                var transactionB = new TransactionEntity()
+                {
+                    SenderAccountId = body.SourceAccountId,
+                    ReceiverAccountId = body.DestinationAccoutId,
+                    TransactionDate = DateTime.UtcNow,
+                    TransactionType = TransactionTypeEnum.Transfer,
+                    TransactionStatus = TransactionStatusEnum.Pending,
+                    TransferContent = sourceBank.AccountBank.BankOwnerName + " chuyen khoan"
+                };
+
+                return Ok(new
+                {
+                    sourceBank,
+                    destinationBank,
+                    transactions = new List<Object>() { transactionA, transactionB }
+                });
+            }
         }
 
         [HttpPost("withdrawal")]

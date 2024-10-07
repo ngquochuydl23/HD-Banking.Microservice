@@ -26,27 +26,20 @@ namespace HD.Wallet.Transaction.Service.ExternalServices
                 .GetRequiredValue("ApiBaseUrl");
         }
 
-        public async Task<AccountDto> GetAccountByBankAccountNo(string bankAccountNo, string accessToken)
+        public async Task<AccountDto> GetAccountById(string accountId)
         {
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, _apiBaseUrl + "/Account/" + bankAccountNo);
-            request.Headers.Add("Authorization", accessToken);
 
-
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, _apiBaseUrl + "/Account/" + accountId);
             HttpResponseMessage response = await _httpClient.SendAsync(request);
 
             if (!response.IsSuccessStatusCode)
             {
                 var errorJson = await response.Content.ReadAsStringAsync();
-                var error = JsonConvert.DeserializeObject<HttpErrorDto>(errorJson);
-
-                if (error != null)
+                if (response.StatusCode.Equals(400))
                 {
-                    throw new AppException(error.Error.ToString());
+                    return null;
                 }
-                else
-                {
-                    throw new Exception($"Failed to get account. Status Code: {response.StatusCode}, Response: {errorJson}");
-                }
+                throw new Exception($"Failed to get account. Status Code: {response.StatusCode}, Response: {errorJson}");
             }
 
             var data = await response.Content.ReadAsStringAsync();

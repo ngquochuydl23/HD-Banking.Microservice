@@ -1,3 +1,4 @@
+using Confluent.Kafka;
 using HD.Wallet.Shared;
 using HD.Wallet.Shared.Interceptors;
 using HD.Wallet.Transaction.Service.Extensions;
@@ -13,6 +14,9 @@ builder.Services
 
 builder.Services.AddHttpClient();
 builder.Services.AddTransient<AccountExternalService>();
+//builder.Services.AddSingleton(new ProducerBuilder<string, string>(producerConfig).Build());
+
+
 var app = builder.Build();
 app.AddCommonApplicationBuilder();
 app.Run();

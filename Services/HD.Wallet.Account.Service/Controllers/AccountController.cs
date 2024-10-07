@@ -6,6 +6,7 @@ using HD.Wallet.Account.Service.Infrastructure.Entities.Users;
 using HD.Wallet.Shared;
 using HD.Wallet.Shared.Exceptions;
 using HD.Wallet.Shared.Seedworks;
+using HD.Wallet.Shared.SharedDtos.Accounts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -46,24 +47,61 @@ namespace HD.Wallet.Account.Service.Controllers
             return Ok(accounts);
         }
 
-        [HttpGet("{bankAccountNo}")]
-        public IActionResult GetAccountByBankNo(string bankAccountNo)
+
+        [AllowAnonymous]
+        [HttpGet("{accountId}")]
+        public IActionResult GetAccountById(string accountId)
         {
+
             var account = _accountRepo
-                .GetQueryableNoTracking()
-                .FirstOrDefault(x => x.AccountBank.BankAccountId.Equals(bankAccountNo) && x.UserId.Equals(LoggingUserId))
-                    ?? throw new AppException("Account not found");
+                   .GetQueryableNoTracking()
+                   .FirstOrDefault(x => x.Id.Equals(accountId))
+                           ?? throw new AppException("Account not found");
 
             return Ok(account);
         }
 
-        [HttpGet("balance")]
+        [AllowAnonymous]
+        [HttpPost("FindAccount")]
+        public IActionResult FindAccount([FromBody] FindAccountDto body)
+        {
+        
+            if (body.IsBankLinking && !string.IsNullOrEmpty(body.BankName))
+            {
+                var account = _accountRepo
+                    .GetQueryableNoTracking()
+                    .FirstOrDefault(x => 
+                        x.AccountBank.BankAccountId.Equals(body.AccountNo)
+                        && x.IsBankLinking
+                        && x.AccountBank.BankName.Equals(body.BankName))
+                            ?? throw new AppException("Account not found");
+
+                return Ok(account);
+            } else
+            {
+
+                var account = _accountRepo
+                   .GetQueryableNoTracking()
+                   .FirstOrDefault(x => x.AccountBank.BankAccountId.Equals(body.AccountNo) && !x.IsBankLinking)
+                           ?? throw new AppException("Account not found");
+
+                return Ok(account);
+
+            }
+        }
+
+        [HttpGet("Balance")]
         public IActionResult GetAccountBalance()
         {
             var account = _accountRepo
                 .GetQueryableNoTracking()
-                .FirstOrDefault(x => !x.IsBankLinking && x.UserId.Equals(LoggingUserId))
+                .FirstOrDefault(x => x.UserId.Equals(LoggingUserId))
                     ?? throw new AppException("Account not found");
+
+            if (account.IsBankLinking)
+            {
+                throw new AppException("Cannot track bank account");
+            }
 
             return Ok(new
             {
@@ -101,7 +139,7 @@ namespace HD.Wallet.Account.Service.Controllers
             return Ok(account);
         }
 
-        [HttpPost("{accountId}/blocked")]
+        [HttpPost("{accountId}/Blocked")]
         public IActionResult BlockPaymentAccount(string accountId)
         {
             var account = _accountRepo
@@ -120,7 +158,7 @@ namespace HD.Wallet.Account.Service.Controllers
             return Ok(account);
         }
 
-        [HttpPost("{accountId}/unlink")]
+        [HttpPost("{accountId}/Unlink")]
         public IActionResult UnlinkPaymentAccount(string accountId)
         {
             var account = _accountRepo
@@ -138,12 +176,6 @@ namespace HD.Wallet.Account.Service.Controllers
             account = _accountRepo.Update(accountId, account);
 
             return Ok(account);
-        }
-
-        [HttpPost("main/generate-qr-code")]
-        public IActionResult GenerateQrCode()
-        {
-            return Ok();
         }
     }
 }
