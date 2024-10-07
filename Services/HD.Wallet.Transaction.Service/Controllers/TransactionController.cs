@@ -6,6 +6,7 @@ using HD.Wallet.Shared.Seedworks;
 using HD.Wallet.Transaction.Service.Dtos.Funds;
 using HD.Wallet.Transaction.Service.Dtos.Transfers;
 using HD.Wallet.Transaction.Service.Dtos.Withdrawls;
+using HD.Wallet.Transaction.Service.ExternalServices;
 using HD.Wallet.Transaction.Service.FilterQueries;
 using HD.Wallet.Transaction.Service.Infrastructure.Transactions;
 using Microsoft.AspNetCore.Authorization;
@@ -17,6 +18,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
     [Route("transaction-api/[controller]")]
     public class TransactionController : BaseController
     {
+        private readonly AccountExternalService _accountExternalService;
         private readonly IEfRepository<TransactionEntity, string> _transactionRepo;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -25,11 +27,13 @@ namespace HD.Wallet.Transaction.Service.Controllers
           IEfRepository<TransactionEntity, string> transactionRepo,
           IHttpContextAccessor httpContextAccessor,
           IUnitOfWork unitOfWork,
+          AccountExternalService accountExternalService,
           IMapper mapper) : base(httpContextAccessor)
         {
             _transactionRepo = transactionRepo;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _accountExternalService = accountExternalService;
         }
 
 
@@ -57,8 +61,11 @@ namespace HD.Wallet.Transaction.Service.Controllers
         }
 
         [HttpPost("transfer")]
-        public IActionResult Transfer([FromBody] RequestTransferDto body)
+        public async Task<IActionResult> Transfer([FromBody] RequestTransferDto body)
         {
+            
+            var account = await _accountExternalService.GetAccountByBankAccountNo(body.ReceiverAccountId, AccessToken);
+
             var transactionA = new TransactionEntity()
             {
                 SenderAccountId = body.SenderAccountId,

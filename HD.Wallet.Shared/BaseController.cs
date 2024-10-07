@@ -35,7 +35,7 @@ namespace HD.Wallet.Shared
             });
         }
 
-
+        protected string AccessToken => Request.Headers["Authorization"].ToString();
         protected string LoggingUserId => _httpContext.User.FindFirstValue("id");
         protected string Role => _httpContext.User.FindFirstValue("role");
         protected string PhoneNumber => _httpContext.User.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/mobilephone");

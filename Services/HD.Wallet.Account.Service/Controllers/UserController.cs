@@ -45,5 +45,17 @@ namespace HD.Wallet.Account.Service.Controllers
             return Ok(_mapper.Map<UserDto>(user));
 
         }
+
+        [HttpGet("find-user-by-phone")]
+        public async Task<IActionResult> FindUserByPhone([FromQuery] string phone)
+        {
+            var user = _userRepo
+              .GetQueryable()
+              .FirstOrDefault(x => x.PhoneNumber.Equals(phone))
+                ?? throw new AppException("User not found");
+
+
+            return Ok(_mapper.Map<UserDto>(user));
+        }
     }
 }

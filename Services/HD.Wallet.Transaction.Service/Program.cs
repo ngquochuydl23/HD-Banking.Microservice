@@ -1,5 +1,7 @@
 using HD.Wallet.Shared;
+using HD.Wallet.Shared.Interceptors;
 using HD.Wallet.Transaction.Service.Extensions;
+using HD.Wallet.Transaction.Service.ExternalServices;
 using HD.Wallet.Transaction.Service.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +11,8 @@ builder.Services
    .AddDbContext<TransactionDbContext>(builder.Configuration)
    .AddAutoMapperConfig<AutoMapperProfile>();
 
+builder.Services.AddHttpClient();
+builder.Services.AddTransient<AccountExternalService>();
 var app = builder.Build();
 app.AddCommonApplicationBuilder();
 app.Run();

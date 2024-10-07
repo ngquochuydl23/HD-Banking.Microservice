@@ -40,31 +40,36 @@ namespace HD.Wallet.Account.Service.Controllers
             var accounts = _accountRepo
                 .GetQueryableNoTracking()
                 .Where(x => x.UserId.Equals(LoggingUserId))
+                .Where(x => !x.IsUnlinked)
                 .ToList();
 
             return Ok(accounts);
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetAccountById(string accountId)
+        [HttpGet("{bankAccountNo}")]
+        public IActionResult GetAccountByBankNo(string bankAccountNo)
         {
             var account = _accountRepo
                 .GetQueryableNoTracking()
-                .FirstOrDefault(x => x.Id.Equals(accountId) && x.UserId.Equals(LoggingUserId))
+                .FirstOrDefault(x => x.AccountBank.BankAccountId.Equals(bankAccountNo) && x.UserId.Equals(LoggingUserId))
                     ?? throw new AppException("Account not found");
 
             return Ok(account);
         }
 
         [HttpGet("balance")]
-        public IActionResult GetAccountBalance([FromQuery] string accountId)
+        public IActionResult GetAccountBalance()
         {
             var account = _accountRepo
                 .GetQueryableNoTracking()
-                .FirstOrDefault(x => x.Id.Equals(accountId) && x.UserId.Equals(LoggingUserId))
+                .FirstOrDefault(x => !x.IsBankLinking && x.UserId.Equals(LoggingUserId))
                     ?? throw new AppException("Account not found");
 
-            return Ok(account.AccountBank);
+            return Ok(new
+            {
+                Balance = account.WalletBalance,
+                AccountId = account.Id
+            });
         }
 
         [HttpPost]

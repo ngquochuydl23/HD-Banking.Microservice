@@ -3,7 +3,6 @@ using HD.Wallet.Identity.ExternalServices;
 using HD.Wallet.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddHttpClient();
 builder.Services.AddWebApiConfiguration(builder.Configuration);
 builder.Services.AddTransient<UserExternalService>();
 

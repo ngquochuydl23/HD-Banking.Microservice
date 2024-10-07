@@ -10,6 +10,7 @@ using HD.Wallet.Shared.Exceptions;
 using HD.Wallet.Shared.Seedworks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System.Net.Http;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 
@@ -47,7 +48,7 @@ namespace HD.Wallet.Account.Service.Controllers
             var validationResult = await _validations.ValidateAsync(body);
             if (!validationResult.IsValid)
             {
-                return BadRequest(validationResult.Errors);
+                throw new AppException(validationResult.Errors.ToString());
             }
 
             var user = new UserEntity();
@@ -59,7 +60,17 @@ namespace HD.Wallet.Account.Service.Controllers
             
             if (availableUser != null)
             {
-                throw new AppException("PhoneNumber or Email or IdCard is already used.");
+                var errors = new List<object>();
+
+                foreach (var failure in validationResult.Errors)
+                {
+                    errors.Add(new
+                    {
+                        Field = failure.PropertyName,
+                        Error = failure.ErrorMessage
+                    });
+                }
+                throw new AppException(JsonConvert.SerializeObject(errors));
             }
 
             try
