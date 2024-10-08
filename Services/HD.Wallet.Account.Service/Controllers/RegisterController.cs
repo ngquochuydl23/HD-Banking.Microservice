@@ -104,6 +104,7 @@ namespace HD.Wallet.Account.Service.Controllers
                 user.Sex = 1;
                 user.IsEkycVerfied = true;
                 user.HashPassword = BCrypt.Net.BCrypt.HashPassword(body.Password);
+                user.PinPassword = BCrypt.Net.BCrypt.HashPassword("111111");
                 user.FaceVerificationUrl = body.FaceVerificationUrl;
                 user.AccountStatus = UserStatusEnum.Active;
 
