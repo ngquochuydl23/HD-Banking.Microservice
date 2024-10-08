@@ -19,6 +19,8 @@ using Redis.OM;
 using Confluent.Kafka;
 using IdentityServer4.Models;
 using IdentityModel.Client;
+using System.Reflection;
+using HD.Wallet.Shared.Attributes;
 
 
 namespace HD.Wallet.Shared
@@ -32,9 +34,10 @@ namespace HD.Wallet.Shared
 				 .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 			services.AddCors();
 			services.AddEndpointsApiExplorer();
-			services.AddSwaggerGen();
 			services.AddHttpContextAccessor();
-			services.Configure<ForwardedHeadersOptions>(options =>
+			services.AddHttpClient();
+            services.AddScoped<PinRequiredAttribute>();
+            services.Configure<ForwardedHeadersOptions>(options =>
 			{
 				options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 			});
@@ -129,7 +132,8 @@ namespace HD.Wallet.Shared
 						}
 					});
 				options.OperationFilter<AuthorizeCheckOperationFilter>();
-			});
+
+            });
 			return services;
 		}
 

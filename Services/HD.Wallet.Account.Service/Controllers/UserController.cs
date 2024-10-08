@@ -5,8 +5,10 @@ using HD.Wallet.Account.Service.Infrastructure.Entities.Users;
 using HD.Wallet.Shared;
 using HD.Wallet.Shared.Exceptions;
 using HD.Wallet.Shared.Seedworks;
+using HD.Wallet.Shared.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace HD.Wallet.Account.Service.Controllers
 {
@@ -56,6 +58,29 @@ namespace HD.Wallet.Account.Service.Controllers
 
 
             return Ok(_mapper.Map<UserDto>(user));
+        }
+
+        [HttpPost("ValidatePinNumber")]
+        public IActionResult ValidatePinNumber([FromHeader(Name = "X-EncryptedPin")] string encryptedPin)
+        {
+            var user = _userRepo
+                .GetQueryableNoTracking()
+                .FirstOrDefault(x => x.Id.Equals(LoggingUserId))
+                    ?? throw new AppException("User not found");
+
+
+            if (!Base64Validator.IsBase64String(encryptedPin))
+            {
+                throw new AppException("EncryptedPin is invalid");
+            }
+         
+            var pin = AesDecryption.Decrypt(encryptedPin);
+            if (!BCrypt.Net.BCrypt.Verify(pin, user.PinPassword))
+            {
+                throw new AppException("Pin is incorrect");
+            }
+
+            return Ok();
         }
     }
 }

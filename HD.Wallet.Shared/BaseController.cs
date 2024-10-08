@@ -35,6 +35,7 @@ namespace HD.Wallet.Shared
             });
         }
 
+
         protected string AccessToken => Request.Headers["Authorization"].ToString();
         protected string LoggingUserId => _httpContext.User.FindFirstValue("id");
         protected string Role => _httpContext.User.FindFirstValue("role");
