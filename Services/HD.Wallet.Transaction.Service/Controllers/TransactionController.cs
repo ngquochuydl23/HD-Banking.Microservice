@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HD.Wallet.Shared;
+using HD.Wallet.Shared.Attributes;
 using HD.Wallet.Shared.Exceptions;
 using HD.Wallet.Shared.Queries;
 using HD.Wallet.Shared.Seedworks;
@@ -60,8 +61,11 @@ namespace HD.Wallet.Transaction.Service.Controllers
             return Ok(transaction);
         }
 
+        [ServiceFilter(typeof(PinRequiredAttribute))]
         [HttpPost("InteralTransfer")]
-        public async Task<IActionResult> InternalTransfer([FromBody] RequestTransferDto body)
+        public async Task<IActionResult> InternalTransfer(
+            [FromHeader(Name = "X-EncryptedPin")] string pin,
+            [FromBody] RequestTransferDto body)
         {
             using (_unitOfWork.Begin())
             {
