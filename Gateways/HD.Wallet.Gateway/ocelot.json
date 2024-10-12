@@ -52,6 +52,20 @@
       ],
       "SwaggerKey": "Identity",
       "CorsPolicy": "default"
+    },
+    {
+      "UpstreamPathTemplate": "/api/bankingResource/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "DownstreamScheme": "https",
+      "DownstreamPathTemplate": "/banking-resource-api/{everything}",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "hdbanking.pgonevn.com",
+          "Port": 443
+        }
+      ],
+      "SwaggerKey": "BankingResource",
+      "CorsPolicy": "default"
     }
   ],
   "SwaggerEndPoints": [
@@ -82,6 +96,16 @@
           "Name": "Identity API",
           "Version": "v1",
           "Url": "https://hdbanking.pgonevn.com/identity-swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "BankingResource",
+      "Config": [
+        {
+          "Name": "BankingResource API",
+          "Version": "v1",
+          "Url": "https://hdbanking.pgonevn.com/banking-resource-swagger/v1/swagger.json"
         }
       ]
     }

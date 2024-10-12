@@ -9,15 +9,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gateways", "Gateways", "{74
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Jobs", "Jobs", "{D5E5EE62-284A-480C-8208-4DB662C27582}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HD.Wallet.Shared", "HD.Wallet.Shared\HD.Wallet.Shared.csproj", "{6D39C00C-2414-4289-8A88-1383AD126AD9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HD.Wallet.Shared", "HD.Wallet.Shared\HD.Wallet.Shared.csproj", "{6D39C00C-2414-4289-8A88-1383AD126AD9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HD.Wallet.Account.Service", "Services\HD.Wallet.Account.Service\HD.Wallet.Account.Service.csproj", "{B341D7A2-0D9A-4471-ADE1-223CA8D33F15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HD.Wallet.Account.Service", "Services\HD.Wallet.Account.Service\HD.Wallet.Account.Service.csproj", "{B341D7A2-0D9A-4471-ADE1-223CA8D33F15}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HD.Wallet.Transaction.Service", "Services\HD.Wallet.Transaction.Service\HD.Wallet.Transaction.Service.csproj", "{162C57C3-815D-4A34-9564-548FD4E0BB88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HD.Wallet.Transaction.Service", "Services\HD.Wallet.Transaction.Service\HD.Wallet.Transaction.Service.csproj", "{162C57C3-815D-4A34-9564-548FD4E0BB88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HD.Wallet.Gateway", "Gateways\HD.Wallet.Gateway\HD.Wallet.Gateway.csproj", "{1CF7F74A-CC92-48C2-B4AE-1D3D6A8ECFAD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HD.Wallet.Gateway", "Gateways\HD.Wallet.Gateway\HD.Wallet.Gateway.csproj", "{1CF7F74A-CC92-48C2-B4AE-1D3D6A8ECFAD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HD.Wallet.Identity.Service", "Services\HD.Wallet.Identity.Service\HD.Wallet.Identity.Service.csproj", "{0E1EE967-8825-4987-8C93-E3D7A2D9984D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HD.Wallet.Identity.Service", "Services\HD.Wallet.Identity.Service\HD.Wallet.Identity.Service.csproj", "{0E1EE967-8825-4987-8C93-E3D7A2D9984D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HD.Wallet.BankingResource.Service", "Services\HD.Wallet.BankingResource.Service\HD.Wallet.BankingResource.Service.csproj", "{1B233D20-F36F-4AC9-AE3F-9F28A4FEBD81}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{0E1EE967-8825-4987-8C93-E3D7A2D9984D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E1EE967-8825-4987-8C93-E3D7A2D9984D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E1EE967-8825-4987-8C93-E3D7A2D9984D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B233D20-F36F-4AC9-AE3F-9F28A4FEBD81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B233D20-F36F-4AC9-AE3F-9F28A4FEBD81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B233D20-F36F-4AC9-AE3F-9F28A4FEBD81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B233D20-F36F-4AC9-AE3F-9F28A4FEBD81}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,6 +60,7 @@ Global
 		{162C57C3-815D-4A34-9564-548FD4E0BB88} = {E0769CA6-C740-4CF0-888E-99DCCB0C2FA0}
 		{1CF7F74A-CC92-48C2-B4AE-1D3D6A8ECFAD} = {74813029-FCF6-4ACE-BBA1-9F3AAF5834D8}
 		{0E1EE967-8825-4987-8C93-E3D7A2D9984D} = {E0769CA6-C740-4CF0-888E-99DCCB0C2FA0}
+		{1B233D20-F36F-4AC9-AE3F-9F28A4FEBD81} = {E0769CA6-C740-4CF0-888E-99DCCB0C2FA0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {51B6B32F-5378-4CAF-AA5D-41043029C035}
