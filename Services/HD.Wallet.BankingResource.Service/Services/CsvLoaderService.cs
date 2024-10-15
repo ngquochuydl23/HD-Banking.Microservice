@@ -3,6 +3,7 @@ using CsvHelper;
 using System.Globalization;
 using System;
 using HD.Wallet.Shared.SharedDtos.Banks;
+using Microsoft.Extensions.Hosting;
 
 namespace HD.Wallet.BankingResource.Service.Services
 {
@@ -10,9 +11,18 @@ namespace HD.Wallet.BankingResource.Service.Services
     {
         private readonly List<BankDto> _banks;
 
-        public CsvLoaderService()
+        public CsvLoaderService(IHostEnvironment hostEnvironment)
         {
-            _banks = LoadCsv("Data/banking_resource_production.csv");
+
+
+            if (hostEnvironment.IsDevelopment())
+            {
+                _banks = LoadCsv("Data/banking_resource_production.csv");
+            } else
+            {
+                _banks = LoadCsv("/app/Data/banking_resource_production.csv");
+            }
+            
         }
 
         private List<BankDto> LoadCsv(string filePath)
