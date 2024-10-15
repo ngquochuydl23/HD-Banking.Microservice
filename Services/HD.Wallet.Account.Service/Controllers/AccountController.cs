@@ -61,6 +61,17 @@ namespace HD.Wallet.Account.Service.Controllers
             return Ok(account);
         }
 
+        [HttpGet("primary")]
+        public IActionResult GetPrimaryAccount()
+        {
+            var account = _accountRepo
+                   .GetQueryableNoTracking()
+                   .FirstOrDefault(x => !x.IsBankLinking && x.UserId.Equals(LoggingUserId))
+                           ?? throw new AppException("Account not found");
+
+            return Ok(account);
+        }
+
         [AllowAnonymous]
         [HttpPost("FindAccount")]
         public IActionResult FindAccount([FromBody] FindAccountDto body)

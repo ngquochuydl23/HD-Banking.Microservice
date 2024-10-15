@@ -12,8 +12,7 @@ namespace HD.Wallet.Shared.SharedDtos.Banks
 
         public string AndroidAppId { get; set; }
 
-
-        public string? LogoApp;
+        public string LogoApp { get; set; }
 
         public string Name { get; set; }
 

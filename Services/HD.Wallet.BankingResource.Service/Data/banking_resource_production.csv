@@ -1,0 +1,42 @@
+#,ShortName,AndroidAppId,LogoApp,Name,Code,Bin,Top
+1.0,VPBank NEO,com.vnpay.vpbankonline,uploads/vpbank.png,Ngân hàng TMCP Việt Nam Thịnh Vượng,VPB,970432.0,4.0
+2.0,BIDV SmartBanking,com.vnpay.bidv,uploads/bidv.png,Ngân Hàng TMCP Đầu tư và Phát triển Việt Nam ,BIDV,970418.0,2.0
+3.0,VCB Digibank,com.VCB,uploads/vcb.png,Ngân hàng TMCP Ngoại Thương Việt Nam ,VCB,970436.0,1.0
+4.0,VietinBank iPay,com.vietinbank.ipay,uploads/vietinbank.png,Ngân hàng TMCP Công Thương Việt Nam ,ICB,970415.0,3.0
+5.0,MB BANK,com.mbmobile,uploads/mbbank.png,Ngân hàng TMCP Quân Đội,MB,970422.0,6.0
+6.0,ACB ONE,mobile.acb.com.vn,uploads/acbone.png,Ngân hàng TMCP Á Châu ,ACB,970416.0,7.0
+7.0,SHB Mobile,vn.shb.mbanking,uploads/shb.png,Ngân hàng TMCP Sài Gòn - Hà Nội,SHB,970443.0,15.0
+8.0,Techcombank Mobile,vn.com.techcombank.bb.app,uploads/techcombank.png,Ngân hàng TMCP Kỹ Thương,TCB,970407.0,5.0
+9.0,Agribank Plus,com.vnpay.Agribank3g,uploads/agribank.png,Ngân hàng NN&PT Nông thôn Việt Nam ,VBA,970405.0,9.0
+10.0,HDBank,com.vnpay.hdbank,uploads/hdbank.png,Ngân hàng TMCP Phát triển Thành phố Hồ Chí Minh,HDB,970437.0,11.0
+11.0,LPBank,vn.com.lpb.lienviet24h,uploads/lpbank.png,Ngân hàng Lộc Phát Việt Nam ,LPB,970449.0,16.0
+12.0,MyVIB,com.vib.myvib2,uploads/vib.png,Ngân hàng TMCP Quốc Tế,VIB,970441.0,13.0
+13.0,SeAMobile,vn.com.seabank.mb1,uploads/seamobile.png,Ngân hàng TMCP Đông Nam Á,SEAB,970440.0,20.0
+15.0,TPBank Mobile,com.tpb.mb.gprsandroid,uploads/tpbank.png,Ngân hàng TMCP Tiên Phong,TPB,970423.0,10.0
+16.0,OCB OMNI 4.0,vn.com.ocb.awe,uploads/ocb.png,Ngân hàng TMCP Phương Đông,OCB,970448.0,12.0
+17.0,MSB  mBank,vn.com.msb.smartBanking,uploads/msb.png,Ngân hàng TMCP Hàng Hải ,MSB,970426.0,19.0
+18.0,Sacombank Pay,com.sacombank.ewallet,uploads/sacombank.png,Ngân hàng TMCP Sài Gòn Thương Tín,STB,970403.0,8.0
+19.0,Eximbank EDigi,com.vnpay.EximBankOmni,uploads/eximbank.png,Ngân hàng TMCP Xuất Nhập Khẩu,EIB,970431.0,14.0
+20.0,SCB Mobile Banking,com.vnpay.SCB,uploads/scb.png,Ngân hàng TMCP Sài Gòn,SCB,970429.0,17.0
+21.0,Nam A Bank - OPEN BANKING,ops.namabank.com.vn,uploads/namabank.png,Ngân hàng TMCP Nam Á,NAB,970428.0,18.0
+22.0,ABBank,com.vnpay.abbank,uploads/abbank.png,Ngân hàng TMCP An Bình,ABB,970425.0,29.0
+23.0,PVConnect,com.pvcombank.retail,uploads/pvc.png,Ngân hàng TMCP Đại Chúng Việt Nam ,PVCB,970412.0,28.0
+24.0,BAC A BANK Mobile Banking,com.bab.retailUAT,uploads/bacabank.png,Ngân hàng TMCP Bắc Á,BAB,970409.0,24.0
+25.0,UOB TMRW (SG),com.uob.mighty.app,uploads/uob.png,Ngân hàng TNHH MTV UOB Việt Nam,UOB,970458.0,25.0
+26.0,Woori WON Vietnam,vn.com.woori.smart,uploads/woori.png,Ngân hàng TNHH Woori Việt Nam,WVN,970457.0,26.0
+28.0,NCB,com.ncb.bank,uploads/ncb.png,Ngân hàng TMCP Quốc dân,NCB,970419.0,23.0
+29.0,PGBank App,pgbankApp.pgbank.com.vn,uploads/pgbank.png,Ngân hàng TMCP Xăng dầu Petrolimex,PGB,970430.0,31.0
+30.0,VietABank EzMobile,phn.com.vn.mb,uploads/vietabank.png,Ngân hàng TMCP Việt Á,VAB,970427.0,30.0
+31.0,Viet Capital Biz,com.vccb.KHDN,uploads/vietcapital.png,Ngân hàng TMCP Bản Việt,VCCB,970454.0,21.0
+32.0,DongA Bank,com.dongabank.mobilenternet,uploads/dongabank.png,Ngân hàng TMCP Đông Á,DOB,970406.0,22.0
+33.0,Vietbank,com.vnpay.vietbank,uploads/vietbank.png,Ngân hàng TMCP Việt Nam Thương Tín,VIETBANK,970433.0,32.0
+34.0,OceanBank,com.vnpay.ocean,uploads/oceabank.png,Ngân hàng TNHH MTV Đại Dương,Oceanbank,970414.0,33.0
+35.0,Kienlongbank,com.sunshine.ksbank,uploads/kienlongbank.png,Ngân hàng TMCP Kiên Long,KLB,970452.0,34.0
+36.0, IVB Mobile Banking,com.vnpay.ivb,uploads/ivb.png,Ngân hàng TNHH Indovina,IVB,970434.0,35.0
+37.0,BAOVIET Bank,com.vnpay.bvbank,uploads/baovietbank.png,Ngân hàng TMCP Bảo Việt,BVB,970438.0,36.0
+38.0,SAIGONBANK,com.vnpay.sgbank,uploads/saigonbank.png,Ngân hàng TMCP Sài Gòn Công Thương,SGICB,970400.0,37.0
+39.0,Co-opBank,com.vnpay.coopbank,uploads/coopbank.png,Ngân hàng Hợp tác xã Việt Nam,COOPBANK,970446.0,38.0
+40.0,VR Banking,de.fiduciagad.banking.vr,uploads/vrbanking.png,Ngân hàng Liên doanh Việt Nga,VRB,970421.0,39.0
+41.0,PB engage VN,com.vnpay.publicbank,uploads/pb.png,Ngân hàng TNHH Một thành viên Public Việt Nam,PBVN,970439.0,40.0
+42.0,iShinhan,vn.com.shinhanfinance.ishinhan,uploads/ishinhan.png,Ngân hàng TNHH Một Thành Viên Shinhan Việt Nam,SHBVN,970424.0,41.0
+43.0,Timo,io.lifestyle.plus,uploads/timo.png,Ngân hàng Bản Việt - BVBank,TIMO,963388.0,43.0

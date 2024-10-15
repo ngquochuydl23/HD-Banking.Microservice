@@ -32,13 +32,35 @@ namespace HD.Wallet.Account.Service.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("UserInfo")]
+        public IActionResult GetUserInfo([FromBody] RequestUpdateUserInfoDto body)
+        {
+            var user = _userRepo
+                 .GetQueryable()
+                 .FirstOrDefault(x => x.Id.Equals(LoggingUserId))
+                   ?? throw new AppException("User not found");
+
+            return Ok(_mapper.Map<UserDto>(user));
+        }
+
+        [HttpPut("UserInfo")]
+        public IActionResult UpdateUserInfo([FromBody] RequestUpdateUserInfoDto body)
+        {
+            var user = _userRepo
+                 .GetQueryableNoTracking()
+                 .FirstOrDefault(x => x.Id.Equals(LoggingUserId))
+                   ?? throw new AppException("User not found");
+
+            return Ok(_mapper.Map<UserDto>(user));
+        }
+
         [AllowAnonymous]
         [HttpPost("Validate")]
         public async Task<IActionResult> ValidateUser([FromBody] RequestValidateUserDto body)
         {
             var user = _userRepo
-              .GetQueryable()
-              .FirstOrDefault(x => x.PhoneNumber.Equals(body.PhoneNumber))
+                .GetQueryable()
+                .FirstOrDefault(x => x.PhoneNumber.Equals(body.PhoneNumber))
                 ?? throw new AppException("User not found");
 
 
@@ -56,8 +78,8 @@ namespace HD.Wallet.Account.Service.Controllers
         public async Task<IActionResult> FindUserByPhone([FromQuery] string phone)
         {
             var user = _userRepo
-              .GetQueryable()
-              .FirstOrDefault(x => x.PhoneNumber.Equals(phone))
+                .GetQueryable()
+                .FirstOrDefault(x => x.PhoneNumber.Equals(phone))
                 ?? throw new AppException("User not found");
 
 
