@@ -1,18 +1,24 @@
 ﻿using System.Globalization;
 using System.Text;
+using System.Text.Json;
 
 namespace HD.Wallet.Account.Service.Infrastructure.Entities.Accounts
 {
     public class AccountBankValueObject
     {
+        public string Bin { get; set; }
+
         public string BankName { get; set; }
 
         public string BankAccountId { get; set; }
 
         public string BankOwnerName { get; set; }
 
-        public string IdCardNo { get; set; }
+        public string LogoUrl { get; set; }
 
+        public string BankFullName { get; set; }
+
+        public string IdCardNo { get; set; }
 
         // Hàm chuyển đổi chuỗi thành in hoa và không dấu
         public static string ToUpperCaseWithoutDiacritics(string input)

@@ -2,7 +2,7 @@
 {
     public class AddLinkedAccountDto
     {
-        public string BankName { get; set; }
+        public string Bin { get; set; }
 
         public string BankAccountId { get; set; }
 

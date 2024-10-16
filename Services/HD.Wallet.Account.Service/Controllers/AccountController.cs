@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
 using HD.Wallet.Account.Service.Dtos;
 using HD.Wallet.Account.Service.Dtos.Accounts;
+using HD.Wallet.Account.Service.Dtos.IdCards;
+using HD.Wallet.Account.Service.ExternalServices;
 using HD.Wallet.Account.Service.Infrastructure.Entities.Accounts;
 using HD.Wallet.Account.Service.Infrastructure.Entities.Users;
 using HD.Wallet.Shared;
 using HD.Wallet.Shared.Exceptions;
 using HD.Wallet.Shared.Seedworks;
 using HD.Wallet.Shared.SharedDtos.Accounts;
+using HD.Wallet.Shared.SharedDtos.Banks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,23 +19,27 @@ namespace HD.Wallet.Account.Service.Controllers
     [Route("account-api/[controller]")]
     public class AccountController : BaseController
     {
-
+        private readonly ILogger<AccountController> _logger;
         private readonly IEfRepository<UserEntity, string> _userRepo;
         private readonly IEfRepository<AccountEntity, string> _accountRepo;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-
+        private readonly BankExternalService _bankExternalService;
         public AccountController(
             IEfRepository<AccountEntity, string> accountRepo,
             IEfRepository<UserEntity, string> userRepo,
             IHttpContextAccessor httpContextAccessor,
             IUnitOfWork unitOfWork,
+            BankExternalService bankExternalService,
+            ILogger<AccountController> logger,
             IMapper mapper) : base(httpContextAccessor)
         {
             _accountRepo = accountRepo;
             _userRepo = userRepo;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _logger = logger;
+            _bankExternalService = bankExternalService;
         }
 
         [HttpGet]
@@ -122,7 +129,7 @@ namespace HD.Wallet.Account.Service.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddLinkedBankAccount([FromBody] AddLinkedAccountDto body)
+        public async Task<IActionResult> AddLinkedBankAccount([FromBody] AddLinkedAccountDto body)
         {
 
             var user = _userRepo.Find(LoggingUserId)
@@ -133,21 +140,45 @@ namespace HD.Wallet.Account.Service.Controllers
                 throw new AppException("IdCardNo of account and yours is not the same");
             }
 
-            var account = _accountRepo.Insert(new AccountEntity()
+            var availableAccount = _accountRepo
+                .GetQueryableNoTracking()
+                .FirstOrDefault(x => x.UserId.Equals(LoggingUserId)
+                    && x.AccountBank.BankAccountId.Equals(body.BankAccountId)
+                    && x.AccountBank.Bin.Equals(body.Bin));
+            if (availableAccount != null)
             {
-                UserId = LoggingUserId,
-                IsBankLinking = true,
-                WalletBalance = 0.0,
-                AccountType = AccountTypeEnum.Basic,
-                AccountBank = new AccountBankValueObject()
+                throw new AppException("This account bank is already linked");
+            }
+
+            try
+            {
+                BankDto bank = await _bankExternalService.GetBankByBin(body.Bin);
+
+                var account = _accountRepo.Insert(new AccountEntity()
                 {
-                    BankOwnerName = body.BankOwnerName,
-                    BankName = body.BankName,
-                    BankAccountId = body.BankAccountId,
-                    IdCardNo = body.IdCardNo,
-                }
-            });
-            return Ok(account);
+                    UserId = LoggingUserId,
+                    IsBankLinking = true,
+                    WalletBalance = 0.0,
+                    AccountType = AccountTypeEnum.Basic,
+                    AccountBank = new AccountBankValueObject()
+                    {
+                        Bin = body.Bin,
+                        BankOwnerName = body.BankOwnerName,
+                        BankName = bank.ShortName,
+                        BankAccountId = body.BankAccountId,
+                        IdCardNo = body.IdCardNo,
+                        LogoUrl = bank.LogoApp,
+                        BankFullName = bank.ShortName
+                    }
+                });
+                return Ok(account);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to get Bank information");
+
+                throw new AppException("Failed to get Bank information");
+            }
         }
 
         [HttpPost("{accountId}/Blocked")]

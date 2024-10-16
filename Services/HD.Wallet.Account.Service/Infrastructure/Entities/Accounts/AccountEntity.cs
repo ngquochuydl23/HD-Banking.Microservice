@@ -2,6 +2,7 @@
 using HD.Wallet.Shared.Seedworks;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using MongoDB.Bson;
 
 namespace HD.Wallet.Account.Service.Infrastructure.Entities.Accounts
 {
