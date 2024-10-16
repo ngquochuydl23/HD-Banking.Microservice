@@ -19,7 +19,6 @@ namespace HD.Wallet.BankingResource.Service.Controllers
         [HttpGet("{fileName}")]
         public IActionResult GetLogoByName(string fileName)
         {
-
             try
             {
                 var b = System.IO.File.ReadAllBytes(@"Data/BankingLogos/" + fileName);

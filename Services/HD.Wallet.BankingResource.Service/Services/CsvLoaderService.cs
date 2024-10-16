@@ -36,5 +36,17 @@ namespace HD.Wallet.BankingResource.Service.Services
         {
             return _banks;
         }
+
+        public List<BankDto> GetTopBanks()
+        {
+            return _banks
+                .OrderBy(x => Double.Parse(x.Top))
+                .ToList();
+        }
+
+        public BankDto? GetBankByBin(string bin)
+        {
+            return _banks.FirstOrDefault(x => x.Bin.Equals(bin));
+        }
     }
 }
