@@ -15,8 +15,4 @@
     <ProjectReference Include="..\..\HD.Wallet.Shared\HD.Wallet.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\BankingLogos\" />
-  </ItemGroup>
-
 </Project>
