@@ -205,16 +205,21 @@ namespace HD.Wallet.Account.Service.Controllers
         {
             var account = _accountRepo
                 .GetQueryable()
-                .FirstOrDefault(x => x.Id.Equals(accountId) && x.UserId.Equals(LoggingUserId))
+                .FirstOrDefault(x => x.Id.Equals(accountId) 
+                    && x.UserId.Equals(LoggingUserId))
                     ?? throw new AppException("Account not found");
 
-            account.IsUnlinked = true;
+            if (!account.IsBankLinking)
+            {
+                throw new AppException("Cannot remove non-linking account");
+            }
 
             if (account.IsUnlinked)
             {
-                throw new AppException("Account is already blocked before.");
+                throw new AppException("Account is already unlinked before.");
             }
 
+            account.IsUnlinked = true;
             account = _accountRepo.Update(accountId, account);
 
             return Ok(account);
