@@ -10,6 +10,7 @@ using HD.Wallet.Shared.Exceptions;
 using HD.Wallet.Shared.Seedworks;
 using HD.Wallet.Shared.SharedDtos.Accounts;
 using HD.Wallet.Shared.SharedDtos.Banks;
+using HD.Wallet.Shared.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -83,19 +84,20 @@ namespace HD.Wallet.Account.Service.Controllers
         [HttpPost("FindAccount")]
         public IActionResult FindAccount([FromBody] FindAccountDto body)
         {
-        
+
             if (body.IsBankLinking && !string.IsNullOrEmpty(body.BankName))
             {
                 var account = _accountRepo
                     .GetQueryableNoTracking()
-                    .FirstOrDefault(x => 
+                    .FirstOrDefault(x =>
                         x.AccountBank.BankAccountId.Equals(body.AccountNo)
                         && x.IsBankLinking
                         && x.AccountBank.BankName.Equals(body.BankName))
                             ?? throw new AppException("Account not found");
 
                 return Ok(account);
-            } else
+            }
+            else
             {
 
                 var account = _accountRepo
@@ -129,11 +131,23 @@ namespace HD.Wallet.Account.Service.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddLinkedBankAccount([FromBody] AddLinkedAccountDto body)
+        public async Task<IActionResult> AddLinkedBankAccount(
+            [FromBody] AddLinkedAccountDto body,
+            [FromHeader(Name = "X-EncryptedPin")] string encryptedPin)
         {
+            if (!Base64Validator.IsBase64String(encryptedPin))
+            {
+                throw new AppException("EncryptedPin is invalid");
+            }
 
             var user = _userRepo.Find(LoggingUserId)
                 ?? throw new AppException("User not found");
+
+            var pin = AesDecryption.Decrypt(encryptedPin);
+            if (!BCrypt.Net.BCrypt.Verify(pin, user.PinPassword))
+            {
+                throw new AppException("Pin is incorrect");
+            }
 
             if (!user.IdCardNo.Equals(body.IdCardNo))
             {
