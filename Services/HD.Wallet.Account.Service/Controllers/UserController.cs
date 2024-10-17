@@ -33,7 +33,7 @@ namespace HD.Wallet.Account.Service.Controllers
         }
 
         [HttpGet("UserInfo")]
-        public IActionResult GetUserInfo([FromBody] RequestUpdateUserInfoDto body)
+        public IActionResult GetUserInfo()
         {
             var user = _userRepo
                  .GetQueryable()
