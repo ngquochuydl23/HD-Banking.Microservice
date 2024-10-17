@@ -196,7 +196,9 @@ namespace HD.Wallet.Account.Service.Controllers
         }
 
         [HttpPost("{accountId}/Blocked")]
-        public IActionResult BlockPaymentAccount(string accountId)
+        public IActionResult BlockPaymentAccount(
+            string accountId,
+            [FromHeader(Name = "X-EncryptedPin")] string encryptedPin)
         {
             var account = _accountRepo
                 .GetQueryable()
@@ -215,7 +217,9 @@ namespace HD.Wallet.Account.Service.Controllers
         }
 
         [HttpPost("{accountId}/Unlink")]
-        public IActionResult UnlinkPaymentAccount(string accountId)
+        public IActionResult UnlinkPaymentAccount(
+            string accountId,
+            [FromHeader(Name = "X-EncryptedPin")] string encryptedPin)
         {
             var account = _accountRepo
                 .GetQueryable()
