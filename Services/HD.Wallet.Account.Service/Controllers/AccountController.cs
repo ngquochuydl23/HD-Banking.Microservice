@@ -11,6 +11,7 @@ using HD.Wallet.Shared.Seedworks;
 using HD.Wallet.Shared.SharedDtos.Accounts;
 using HD.Wallet.Shared.SharedDtos.Banks;
 using HD.Wallet.Shared.Utils;
+using Mailjet.Client.Resources;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -135,19 +136,11 @@ namespace HD.Wallet.Account.Service.Controllers
             [FromBody] AddLinkedAccountDto body,
             [FromHeader(Name = "X-EncryptedPin")] string encryptedPin)
         {
-            if (!Base64Validator.IsBase64String(encryptedPin))
-            {
-                throw new AppException("EncryptedPin is invalid");
-            }
-
+          
             var user = _userRepo.Find(LoggingUserId)
                 ?? throw new AppException("User not found");
 
-            var pin = AesDecryption.Decrypt(encryptedPin);
-            if (!BCrypt.Net.BCrypt.Verify(pin, user.PinPassword))
-            {
-                throw new AppException("Pin is incorrect");
-            }
+            ValidatePinLocal(encryptedPin, user.PinPassword);
 
             if (!user.IdCardNo.Equals(body.IdCardNo))
             {
@@ -221,6 +214,11 @@ namespace HD.Wallet.Account.Service.Controllers
             string accountId,
             [FromHeader(Name = "X-EncryptedPin")] string encryptedPin)
         {
+            var user = _userRepo.Find(LoggingUserId)
+                ?? throw new AppException("User not found");
+
+            ValidatePinLocal(encryptedPin, user.PinPassword);
+
             var account = _accountRepo
                 .GetQueryable()
                 .FirstOrDefault(x => x.Id.Equals(accountId) 
@@ -241,6 +239,21 @@ namespace HD.Wallet.Account.Service.Controllers
             account = _accountRepo.Update(accountId, account);
 
             return Ok(account);
+        }
+
+        private bool ValidatePinLocal(string encryptedPin, string userPinHash)
+        {
+            if (!Base64Validator.IsBase64String(encryptedPin))
+            {
+                throw new AppException("EncryptedPin is invalid");
+            }
+
+            var pin = AesDecryption.Decrypt(encryptedPin);
+            if (!BCrypt.Net.BCrypt.Verify(pin, userPinHash))
+            {
+                throw new AppException("Pin is incorrect");
+            }
+            return true;
         }
     }
 }

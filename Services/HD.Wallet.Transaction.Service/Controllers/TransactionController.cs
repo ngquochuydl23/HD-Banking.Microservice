@@ -120,16 +120,20 @@ namespace HD.Wallet.Transaction.Service.Controllers
             }
         }
 
+        [ServiceFilter(typeof(PinRequiredAttribute))]
         [HttpPost("withdrawal")]
         public IActionResult Withdrawal([FromBody] RequestWithdrawalDto body)
         {
             return Ok(body);
         }
 
+        [ServiceFilter(typeof(PinRequiredAttribute))]
         [HttpPost("fund")]
         public IActionResult Fund([FromBody] RequestFundDto body)
         {
             return Ok(body);
         }
+
+
     }
 }
