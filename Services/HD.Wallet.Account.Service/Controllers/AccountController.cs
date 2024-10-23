@@ -71,7 +71,7 @@ namespace HD.Wallet.Account.Service.Controllers
             return Ok(account);
         }
 
-        [HttpGet("primary")]
+        [HttpGet("Primary")]
         public IActionResult GetPrimaryAccount()
         {
             var account = _accountRepo
