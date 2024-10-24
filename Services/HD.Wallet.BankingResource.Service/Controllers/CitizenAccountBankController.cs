@@ -1,25 +1,44 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using HD.Wallet.BankingResource.Service.Infrastructure;
+using HD.Wallet.Shared;
+using HD.Wallet.Shared.Exceptions;
+using HD.Wallet.Shared.SharedDtos.Accounts;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace HD.Wallet.BankingResource.Service.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
-    public class CitizenAccountBankController : ControllerBase
+    [Route("banking-resource-api/[controller]")]
+    public class CitizenAccountBankController : BaseController
     {
-        // GET: api/<CitizenAccountBankController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly ILogger<CitizenAccountBankController> _logger;
+        private readonly BankingResourceDbContext _dbContext;
+        private readonly IMapper _mapper;
+
+        public CitizenAccountBankController(
+            IHttpContextAccessor httpContextAccessor,
+            BankingResourceDbContext dbContext,
+            IMapper mapper,
+            ILogger<CitizenAccountBankController> logger) : base(httpContextAccessor)
         {
-            return new string[] { "value1", "value2" };
+            _mapper = mapper;
+            _logger = logger;
+            _dbContext = dbContext;
         }
 
-        // GET api/<CitizenAccountBankController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet]
+        public IActionResult GetCitizenAccountBank([FromQuery] string bin, [FromQuery] string accountNo)
         {
-            return "value";
+            var citizenAccount = _dbContext.CitizenAccountBanks
+                .AsNoTracking()
+                .Include(x => x.Bank)
+                .FirstOrDefault(x => x.AccountNo.Equals(accountNo) && x.Bin.Equals(bin))
+                    ?? throw new AppException("Citizen Account not found.");
+
+            return Ok(_mapper.Map<CitizenAccountDto>(citizenAccount));
         }
 
         // POST api/<CitizenAccountBankController>

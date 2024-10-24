@@ -1,7 +1,10 @@
 
-using HD.Wallet.BankingResource.Service.Services;
+using HD.Wallet.BankingResource.Service.Extensions;
+using HD.Wallet.BankingResource.Service.Infrastructure;
 using HD.Wallet.Shared;
 using HD.Wallet.Shared.Interceptors;
+using HD.Wallet.Shared.Seedworks;
+using Microsoft.EntityFrameworkCore;
 
 namespace HD.Wallet.BankingResource.Service
 {
@@ -12,7 +15,14 @@ namespace HD.Wallet.BankingResource.Service
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddWebApiConfiguration(builder.Configuration);
-            builder.Services.AddSingleton<IServiceCsvLoader, CsvLoaderService>();
+
+            builder.Services.AddDbContext<BankingResourceDbContext>(options =>
+                options.UseMySql(
+                    builder.Configuration.GetConnectionString("MySQLConnection"),
+                    ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("MySQLConnection"))
+                ));
+
+            builder.Services.AddAutoMapperConfig<AutoMapperProfile>();
             var app = builder.Build();
 
             app.AddCommonApplicationBuilder();

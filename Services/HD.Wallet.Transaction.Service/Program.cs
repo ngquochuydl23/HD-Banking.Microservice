@@ -14,7 +14,6 @@ builder.Services
 
 builder.Services.AddHttpClient();
 builder.Services.AddTransient<AccountExternalService>();
-//builder.Services.AddSingleton(new ProducerBuilder<string, string>(producerConfig).Build());
 
 
 var app = builder.Build();

@@ -1,10 +1,12 @@
 using AutoMapper;
-using HD.Wallet.BankingResource.Service.Services;
+using HD.Wallet.BankingResource.Service.Infrastructure;
+using HD.Wallet.BankingResource.Service.Infrastructure.Entities;
 using HD.Wallet.Shared;
 using HD.Wallet.Shared.Exceptions;
 using HD.Wallet.Shared.Seedworks;
 using HD.Wallet.Shared.SharedDtos.Banks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace HD.Wallet.BankingResource.Service.Controllers
@@ -15,38 +17,49 @@ namespace HD.Wallet.BankingResource.Service.Controllers
     {
 
         private readonly ILogger<BankController> _logger;
-        private readonly IServiceCsvLoader _csvLoader;
+        private readonly BankingResourceDbContext _dbContext;
+        private readonly IMapper _mapper;
+
         public BankController(
-            IHttpContextAccessor httpContextAccessor, 
-            IServiceCsvLoader csvLoader,
+            IHttpContextAccessor httpContextAccessor,
+            BankingResourceDbContext dbContext,
+            IMapper mapper,
             ILogger<BankController> logger) : base(httpContextAccessor)
         {
+            _mapper = mapper;
             _logger = logger;
-            _csvLoader = csvLoader;
+            _dbContext = dbContext;
         }
 
         [HttpGet]
         public IActionResult GetBanks()
         {
-            List<BankDto> banks = _csvLoader.GetAllBanks();
-            return Ok(banks);
+            var banks = _dbContext.Banks
+                .AsNoTracking()
+                .ToList();
+            return Ok(_mapper.Map<List<BankDto>>(banks));
         }
 
         [HttpGet("top")]
         public IActionResult GetTopBanks()
         {
-            List<BankDto> banks = _csvLoader.GetTopBanks();
-            return Ok(banks);
+            var banks = _dbContext.Banks
+               .AsNoTracking()
+               .OrderBy(x => x.Top)
+               .ToList();
+
+            return Ok(_mapper.Map<List<BankDto>>(banks));
         }
 
 
         [HttpGet("{bin}")]
         public IActionResult GetBankByBin(string bin)
         {
-            BankDto bank = _csvLoader.GetBankByBin(bin)
-                ?? throw new AppException("Bank not found"); 
-
-            return Ok(bank);
+            var bank = _dbContext.Banks
+                  .AsNoTracking()
+                  .FirstOrDefault(x => x.Bin.Equals(bin))
+                        ?? throw new AppException("Bank not found");
+            return Ok(_mapper.Map<BankDto>(bank));
         }
     }
 }

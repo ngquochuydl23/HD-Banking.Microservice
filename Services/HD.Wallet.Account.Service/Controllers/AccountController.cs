@@ -51,7 +51,7 @@ namespace HD.Wallet.Account.Service.Controllers
                 .GetQueryableNoTracking()
                 .Where(x => x.UserId.Equals(LoggingUserId))
                 .Where(x => !x.IsUnlinked)
-                .OrderByDescending(x => x.IsBankLinking)
+                .OrderBy(x => x.IsBankLinking)
                 .ToList();
 
             return Ok(accounts);

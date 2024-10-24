@@ -20,6 +20,6 @@ namespace HD.Wallet.Shared.SharedDtos.Banks
 
         public string Bin { get; set; }
 
-        public string Top {  get; set; }
+        public int Top {  get; set; }
     }
 }
