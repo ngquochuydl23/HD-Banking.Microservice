@@ -25,6 +25,7 @@ namespace HD.Wallet.Account.Service.Controllers
         private readonly IMapper _mapper;
         private readonly IdCardExternalService _idCardExternalService;
         private readonly RequestOpenAccountValidator _validations;
+
         public RegisterController(
             IEfRepository<UserEntity, string> userRepo,
             IHttpContextAccessor httpContextAccessor,
@@ -73,16 +74,16 @@ namespace HD.Wallet.Account.Service.Controllers
                 throw new AppException(JsonConvert.SerializeObject(errors));
             }
 
-            try
-            {
-                ExternalResponseIdCardDto idCardResponse = await _idCardExternalService.GetIdCardById(body.IdCardNo);
-                IdCardDto idCardDetail = idCardResponse.IdCard;
+            ExternalResponseIdCardDto idCardResponse = await _idCardExternalService.GetIdCardById(body.IdCardNo)
+                ?? throw new AppException("IdCard is not verified before");
+
+            IdCardDto idCardDetail = idCardResponse.IdCard;
 
 
-                user.FullName = body.FullName;
-                user.PhoneNumber = body.PhoneNumber;
-                user.DateOfBirth = body.DateOfBirth;
-                user.Accounts = new HashSet<AccountEntity>() {
+            user.FullName = body.FullName;
+            user.PhoneNumber = body.PhoneNumber;
+            user.DateOfBirth = body.DateOfBirth;
+            user.Accounts = new HashSet<AccountEntity>() {
                     new AccountEntity()
                     {
                         IsBankLinking = false,
@@ -100,49 +101,42 @@ namespace HD.Wallet.Account.Service.Controllers
                         },
                         TransactionLimit = 10000000,
                         LinkedAccountId = null,
-                      
+
                     }
                 };
 
-                user.Email = body.Email;
-                user.Sex = idCardDetail.Sex.Equals("Nữ") ? 0 : 1;
-                user.IsEkycVerfied = true;
-                user.HashPassword = BCrypt.Net.BCrypt.HashPassword(body.Password);
-                user.PinPassword = BCrypt.Net.BCrypt.HashPassword("111111");
-                user.FaceVerificationUrl = body.FaceVerificationUrl;
-                user.AccountStatus = UserStatusEnum.Active;
+            user.Email = body.Email;
+            user.Sex = idCardDetail.Sex.Equals("Nữ") ? 0 : 1;
+            user.IsEkycVerfied = true;
+            user.HashPassword = BCrypt.Net.BCrypt.HashPassword(body.Password);
+            user.PinPassword = BCrypt.Net.BCrypt.HashPassword("111111");
+            user.FaceVerificationUrl = body.FaceVerificationUrl;
+            user.AccountStatus = UserStatusEnum.Active;
 
-                user.Address = new AddressValueObject()
-                {
-                    Street = body.Address.Street,
-                    District = body.Address.District,
-                    ProvinceOrCity = body.Address.ProvinceOrCity,
-                    WardOrCommune = body.Address.WardOrCommune
-                };
-
-                user.Work = new WorkValueObject()
-                {
-                    Occupation = "Lập trình viên",
-                    Position = "Chuyên viên cao cấp"
-                };
-
-                user.IdCardNo = idCardDetail.Id;
-                user.Nationality = idCardDetail.Nationality;
-                user.PlaceOfOrigin = idCardDetail.PlaceOfOrigin;
-                user.PlaceOfResidence = idCardDetail.PlaceOfResidence;
-                user.FrontIdCardUrl = idCardResponse.FrontUrl;
-                user.BackIdCardUrl = idCardResponse.BackUrl;
-                user.IdCardType = idCardResponse.Type;
-
-                user = _userRepo.Insert(user);
-                return Ok(user);
-            }
-            catch (Exception ex)
+            user.Address = new AddressValueObject()
             {
-                _logger.LogError(ex, "Failed to get IdCard information");
+                Street = body.Address.Street,
+                District = body.Address.District,
+                ProvinceOrCity = body.Address.ProvinceOrCity,
+                WardOrCommune = body.Address.WardOrCommune
+            };
 
-                throw new AppException("Failed to get IdCard information");
-            }
+            user.Work = new WorkValueObject()
+            {
+                Occupation = "Lập trình viên",
+                Position = "Chuyên viên cao cấp"
+            };
+
+            user.IdCardNo = idCardDetail.Id;
+            user.Nationality = idCardDetail.Nationality;
+            user.PlaceOfOrigin = idCardDetail.PlaceOfOrigin;
+            user.PlaceOfResidence = idCardDetail.PlaceOfResidence;
+            user.FrontIdCardUrl = idCardResponse.FrontUrl;
+            user.BackIdCardUrl = idCardResponse.BackUrl;
+            user.IdCardType = idCardResponse.Type;
+
+            user = _userRepo.Insert(user);
+            return Ok(user);
         }
     }
 }

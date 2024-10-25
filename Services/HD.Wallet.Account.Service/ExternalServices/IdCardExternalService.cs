@@ -3,6 +3,7 @@ using HD.Wallet.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using System.Net;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HD.Wallet.Account.Service.ExternalServices
@@ -31,6 +32,11 @@ namespace HD.Wallet.Account.Service.ExternalServices
 
             if (!response.IsSuccessStatusCode)
             {
+
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return null;
+                }
 
                 var errorContent = await response.Content.ReadAsStringAsync();
                 _logger.LogError("Error retrieving ID card. Status Code: {StatusCode}, Response: {ErrorContent}", response.StatusCode, errorContent);

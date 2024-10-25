@@ -39,6 +39,11 @@ public partial class BankingResourceDbContext : DbContext
             entity.Property(e => e.ShortName).HasMaxLength(50);
             entity.Property(e => e.Top).HasColumnType("int(11)");
             entity.Property(e => e._).HasColumnName("#");
+
+            entity
+                .HasIndex(a => new { a.Name, a.ShortName , a.Bin})
+                .HasMethod("FULLTEXT");
+
         });
 
         modelBuilder.Entity<CitizenAccountBank>(entity =>

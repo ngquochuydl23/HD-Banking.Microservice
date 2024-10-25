@@ -101,21 +101,12 @@ namespace HD.Wallet.Transaction.Service.Controllers
                     TransactionStatus = TransactionStatusEnum.Pending,
                     TransferContent = sourceBank.AccountBank.BankOwnerName + " chuyen khoan"
                 };
-                var transactionB = new TransactionEntity()
-                {
-                    SenderAccountId = body.SourceAccountId,
-                    ReceiverAccountId = body.DestinationAccoutId,
-                    TransactionDate = DateTime.UtcNow,
-                    TransactionType = TransactionTypeEnum.Transfer,
-                    TransactionStatus = TransactionStatusEnum.Pending,
-                    TransferContent = sourceBank.AccountBank.BankOwnerName + " chuyen khoan"
-                };
 
                 return Ok(new
                 {
                     sourceBank,
                     destinationBank,
-                    transactions = new List<Object>() { transactionA, transactionB }
+                    transactionA
                 });
             }
         }

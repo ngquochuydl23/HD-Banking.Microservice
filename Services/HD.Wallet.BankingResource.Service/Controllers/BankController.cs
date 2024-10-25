@@ -3,11 +3,13 @@ using HD.Wallet.BankingResource.Service.Infrastructure;
 using HD.Wallet.BankingResource.Service.Infrastructure.Entities;
 using HD.Wallet.Shared;
 using HD.Wallet.Shared.Exceptions;
+using HD.Wallet.Shared.Queries;
 using HD.Wallet.Shared.Seedworks;
 using HD.Wallet.Shared.SharedDtos.Banks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace HD.Wallet.BankingResource.Service.Controllers
 {
@@ -32,11 +34,16 @@ namespace HD.Wallet.BankingResource.Service.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetBanks()
+        public IActionResult GetBanks([FromQuery] string? search)
         {
             var banks = _dbContext.Banks
                 .AsNoTracking()
+                .AsNoTracking()
+                .Where(b =>
+                    EF.Functions.Like(b.Name, $"%{search}%") ||
+                    EF.Functions.Like(b.ShortName, $"%{search}%"))
                 .ToList();
+
             return Ok(_mapper.Map<List<BankDto>>(banks));
         }
 
