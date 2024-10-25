@@ -90,18 +90,22 @@ namespace HD.Wallet.Account.Service.Controllers
                         AccountType = AccountTypeEnum.Basic,
                         AccountBank = new AccountBankValueObject()
                         {
+                            BankFullName = "Ví điện tử HDWallet",
                             BankOwnerName = AccountBankValueObject.ToUpperCaseWithoutDiacritics(body.FullName),
                             BankName = "HD_WALLET_MBBANK",
                             BankAccountId = body.PhoneNumber,
+                            LogoUrl = "",
                             IdCardNo = body.IdCardNo,
+                            Bin = "9999.0"
                         },
                         TransactionLimit = 10000000,
-                        LinkedAccountId = null
+                        LinkedAccountId = null,
+                      
                     }
                 };
 
                 user.Email = body.Email;
-                user.Sex = 1;
+                user.Sex = idCardDetail.Sex.Equals("Nữ") ? 0 : 1;
                 user.IsEkycVerfied = true;
                 user.HashPassword = BCrypt.Net.BCrypt.HashPassword(body.Password);
                 user.PinPassword = BCrypt.Net.BCrypt.HashPassword("111111");

@@ -6,7 +6,6 @@ using HD.Wallet.Shared.SharedDtos.Accounts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace HD.Wallet.BankingResource.Service.Controllers
 {
@@ -41,21 +40,14 @@ namespace HD.Wallet.BankingResource.Service.Controllers
             return Ok(_mapper.Map<CitizenAccountDto>(citizenAccount));
         }
 
-        // POST api/<CitizenAccountBankController>
         [HttpPost]
         public void Post([FromBody] string value)
         {
+
         }
 
-        // PUT api/<CitizenAccountBankController>/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<CitizenAccountBankController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
         {
         }
     }
