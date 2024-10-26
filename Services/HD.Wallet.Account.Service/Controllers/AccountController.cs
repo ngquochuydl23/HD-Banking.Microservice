@@ -143,50 +143,58 @@ namespace HD.Wallet.Account.Service.Controllers
 
             ValidatePinLocal(encryptedPin, user.PinPassword);
 
+           
+
+            BankDto bank = await _bankExternalService.GetBankByBin(body.Bin)
+                ?? throw new AppException("Bank not found with Bin:" + body.Bin);
+
+            CitizenAccountDto citizenAccount = await _bankExternalService.GetCitizenAccount(body.Bin, body.BankAccountId)
+                ?? throw new AppException("AccountBank not found");
+
+            if (!citizenAccount.IdCardNo.Equals(body.IdCardNo))
+            {
+                throw new AppException("Provided IdCard is not the same of bank account");
+            }
+
             if (!user.IdCardNo.Equals(body.IdCardNo))
             {
                 throw new AppException("IdCardNo of account and yours is not the same");
             }
 
-            var availableAccount = _accountRepo
+            if (!citizenAccount.Status.Equals("Active"))
+            {
+                throw new AppException("Your bank account status is not active");
+            }
+
+            var availableLikingAccount = _accountRepo
                 .GetQueryableNoTracking()
                 .FirstOrDefault(x => x.UserId.Equals(LoggingUserId)
                     && x.AccountBank.BankAccountId.Equals(body.BankAccountId)
                     && x.AccountBank.Bin.Equals(body.Bin));
-            if (availableAccount != null)
+
+            if (availableLikingAccount != null)
             {
                 throw new AppException("This account bank is already linked");
             }
 
-            try
+            var account = _accountRepo.Insert(new AccountEntity()
             {
-                BankDto bank = await _bankExternalService.GetBankByBin(body.Bin);
-
-                var account = _accountRepo.Insert(new AccountEntity()
+                UserId = LoggingUserId,
+                IsBankLinking = true,
+                WalletBalance = citizenAccount.Balance,
+                AccountType = AccountTypeEnum.Basic,
+                AccountBank = new AccountBankValueObject()
                 {
-                    UserId = LoggingUserId,
-                    IsBankLinking = true,
-                    WalletBalance = 0.0,
-                    AccountType = AccountTypeEnum.Basic,
-                    AccountBank = new AccountBankValueObject()
-                    {
-                        Bin = body.Bin,
-                        BankOwnerName = body.BankOwnerName,
-                        BankName = bank.ShortName,
-                        BankAccountId = body.BankAccountId,
-                        IdCardNo = body.IdCardNo,
-                        LogoUrl = bank.LogoApp,
-                        BankFullName = bank.ShortName
-                    }
-                });
-                return Ok(account);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to get Bank information");
-
-                throw new AppException("Failed to get Bank information");
-            }
+                    Bin = body.Bin,
+                    BankOwnerName = citizenAccount.OwnerName,
+                    BankName = bank.ShortName,
+                    BankAccountId = body.BankAccountId,
+                    IdCardNo = citizenAccount.IdCardNo,
+                    LogoUrl = bank.LogoApp,
+                    BankFullName = bank.ShortName
+                }
+            });
+            return Ok(_mapper.Map<AccountDto>(account));
         }
 
         [HttpPost("{accountId}/Blocked")]

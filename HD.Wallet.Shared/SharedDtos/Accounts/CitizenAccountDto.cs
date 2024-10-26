@@ -19,7 +19,7 @@ namespace HD.Wallet.Shared.SharedDtos.Accounts
 
         public string Bin { get; set; } = null!;
 
-        public decimal Balance { get; set; }
+        public double Balance { get; set; }
 
         public DateOnly OpenedAt { get; set; }
 
