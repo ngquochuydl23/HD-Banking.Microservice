@@ -18,6 +18,8 @@ namespace HD.Wallet.Transaction.Service.Infrastructure
                 entity.ToTable("Transaction");
                 entity.HasKey(x => x.Id);
 
+                entity.OwnsOne(x => x.SourceAccount);
+                entity.OwnsOne(x => x.DestAccount);
                 entity
                    .Property(e => e.TransactionType)
                    .HasConversion(

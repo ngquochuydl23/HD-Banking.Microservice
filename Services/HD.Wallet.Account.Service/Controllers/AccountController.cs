@@ -143,8 +143,6 @@ namespace HD.Wallet.Account.Service.Controllers
 
             ValidatePinLocal(encryptedPin, user.PinPassword);
 
-           
-
             BankDto bank = await _bankExternalService.GetBankByBin(body.Bin)
                 ?? throw new AppException("Bank not found with Bin:" + body.Bin);
 
@@ -179,6 +177,7 @@ namespace HD.Wallet.Account.Service.Controllers
 
             var account = _accountRepo.Insert(new AccountEntity()
             {
+                Id = citizenAccount.AccountNo,
                 UserId = LoggingUserId,
                 IsBankLinking = true,
                 WalletBalance = citizenAccount.Balance,
@@ -188,12 +187,14 @@ namespace HD.Wallet.Account.Service.Controllers
                     Bin = body.Bin,
                     BankOwnerName = citizenAccount.OwnerName,
                     BankName = bank.ShortName,
-                    BankAccountId = body.BankAccountId,
+                    BankAccountId = citizenAccount.AccountNo,
                     IdCardNo = citizenAccount.IdCardNo,
                     LogoUrl = bank.LogoApp,
                     BankFullName = bank.ShortName
                 }
             });
+
+
             return Ok(_mapper.Map<AccountDto>(account));
         }
 

@@ -1,15 +1,11 @@
-﻿using HD.Wallet.Account.Service.Dtos.IdCards;
-using HD.Wallet.Shared;
-using HD.Wallet.Shared.BaseDtos;
+﻿using HD.Wallet.Shared.BaseDtos;
 using HD.Wallet.Shared.SharedDtos.Accounts;
 using HD.Wallet.Shared.SharedDtos.Banks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+using HD.Wallet.Shared;
 using Newtonsoft.Json;
 using System.Net;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace HD.Wallet.Account.Service.ExternalServices
+namespace HD.Wallet.Transaction.Service.ExternalServices
 {
     public class BankExternalService
     {
@@ -17,7 +13,7 @@ namespace HD.Wallet.Account.Service.ExternalServices
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private readonly ILogger<BankExternalService> _logger;
-        public BankExternalService(IConfiguration configuration, IHttpClientFactory httpClientFactory, ILogger<BankExternalService> logger) 
+        public BankExternalService(IConfiguration configuration, IHttpClientFactory httpClientFactory, ILogger<BankExternalService> logger)
         {
             _httpClient = httpClientFactory.CreateClient(); ;
             _configuration = configuration;

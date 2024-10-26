@@ -61,55 +61,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
             return Ok(transaction);
         }
 
-        [ServiceFilter(typeof(PinRequiredAttribute))]
-        [HttpPost("InteralTransfer")]
-        public async Task<IActionResult> InternalTransfer(
-            [FromHeader(Name = "X-EncryptedPin")] string pin,
-            [FromBody] RequestTransferDto body)
-        {
-            using (_unitOfWork.Begin())
-            {
-                if (body.SourceAccountId.Equals(body.DestinationAccoutId))
-                {
-                    throw new AppException("Source bank and destination bank is the same");
-                }
-
-                var sourceBank = await _accountExternalService.GetAccountById(body.SourceAccountId)
-                    ?? throw new AppException("Source account not found");
-
-                if (!sourceBank.UserId.Equals(LoggingUserId))
-                {
-                    throw new AppException("The source account is not yours");
-                }
-
-                var destinationBank = await _accountExternalService.GetAccountById(body.DestinationAccoutId)
-                    ?? throw new AppException("Destination account not found");
-
-
-                if (body.TransferAmount > sourceBank.WalletBalance)
-                {
-                    throw new AppException("Balance is not enough to transfer");
-                }
-
-
-                var transactionA = new TransactionEntity()
-                {
-                    SenderAccountId = body.SourceAccountId,
-                    ReceiverAccountId = body.DestinationAccoutId,
-                    TransactionDate = DateTime.UtcNow,
-                    TransactionType = TransactionTypeEnum.Transfer,
-                    TransactionStatus = TransactionStatusEnum.Pending,
-                    TransferContent = sourceBank.AccountBank.BankOwnerName + " chuyen khoan"
-                };
-
-                return Ok(new
-                {
-                    sourceBank,
-                    destinationBank,
-                    transactionA
-                });
-            }
-        }
+       
 
         [ServiceFilter(typeof(PinRequiredAttribute))]
         [HttpPost("withdrawal")]

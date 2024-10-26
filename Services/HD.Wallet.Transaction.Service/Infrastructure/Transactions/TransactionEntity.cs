@@ -12,9 +12,9 @@ namespace HD.Wallet.Transaction.Service.Infrastructure.Transactions
 
         public double Amount { get; set; }
 
-        public string SenderAccountId { get; set; }
+        public AccountBankValueObject SourceAccount { get; set; }
 
-        public string ReceiverAccountId { get; set; }
+        public AccountBankValueObject DestAccount { get; set; }
 
         public DateTime TransactionDate { get; set; }
 
@@ -26,8 +26,7 @@ namespace HD.Wallet.Transaction.Service.Infrastructure.Transactions
 
         public string TransferContent {  get; set; }
 
-        public double BeforeBalance { get; set; }
 
-        public double AfterBalance { get; set; }
+
     }
 }

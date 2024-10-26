@@ -35,7 +35,7 @@ namespace HD.Wallet.Transaction.Service.ExternalServices
             if (!response.IsSuccessStatusCode)
             {
                 var errorJson = await response.Content.ReadAsStringAsync();
-                if (response.StatusCode.Equals(400))
+                if (response.StatusCode.Equals(400) || response.StatusCode.Equals(404))
                 {
                     return null;
                 }

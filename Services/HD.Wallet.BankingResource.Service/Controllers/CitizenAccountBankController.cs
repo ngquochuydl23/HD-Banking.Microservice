@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using HD.Wallet.BankingResource.Service.Dtos;
 using HD.Wallet.BankingResource.Service.Infrastructure;
 using HD.Wallet.Shared;
 using HD.Wallet.Shared.Exceptions;
 using HD.Wallet.Shared.SharedDtos.Accounts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 
 namespace HD.Wallet.BankingResource.Service.Controllers
@@ -41,9 +43,24 @@ namespace HD.Wallet.BankingResource.Service.Controllers
         }
 
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> AddCitizenAccountBank([FromBody] RequestAddCitizenAccountBank body)
         {
+            var citizenAccount = _dbContext.CitizenAccountBanks
+                .AddAsync(new Infrastructure.Entities.CitizenAccountBank
+                {
+                    AccountNo = body.AccountNo,
+                    IdCardNo = body.IdCardNo,
+                    Balance = body.Balance,
+                    BankName = body.BankName,
+                    Bin = body.Bin,
+                    OpenedAt = DateOnly.FromDateTime(body.OpenedAt.Date),
+                    OwnerName = body.OwnerName,
+                    Status = body.Status,
+                });
 
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(citizenAccount);
         }
 
         [HttpPut("{id}")]

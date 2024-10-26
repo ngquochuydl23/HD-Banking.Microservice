@@ -14,7 +14,7 @@ builder.Services
 
 builder.Services.AddHttpClient();
 builder.Services.AddTransient<AccountExternalService>();
-
+builder.Services.AddTransient<BankExternalService>();
 
 var app = builder.Build();
 app.AddCommonApplicationBuilder();
