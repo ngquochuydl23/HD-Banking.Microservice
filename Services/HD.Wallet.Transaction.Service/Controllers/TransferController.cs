@@ -1,16 +1,20 @@
 ﻿using AutoMapper;
+using Confluent.Kafka;
 using HD.Wallet.Shared;
 using HD.Wallet.Shared.Attributes;
 using HD.Wallet.Shared.Exceptions;
 using HD.Wallet.Shared.Seedworks;
+using HD.Wallet.Shared.SharedDtos.Transactions;
 using HD.Wallet.Transaction.Service.Dtos.Transfers;
 using HD.Wallet.Transaction.Service.ExternalServices;
 using HD.Wallet.Transaction.Service.Infrastructure.Transactions;
+using HD.Wallet.Transaction.Service.Producers.TransactionProducer;
 using Mailjet.Client.Resources.SMS;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
+using static Confluent.Kafka.ConfigPropertyNames;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace HD.Wallet.Transaction.Service.Controllers
 {
@@ -24,6 +28,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
         private readonly IEfRepository<TransactionEntity, string> _transactionRepo;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly ITransactionProducer _transactionProducer;
 
         public TransferController(
           IEfRepository<TransactionEntity, string> transactionRepo,
@@ -31,6 +36,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
           IUnitOfWork unitOfWork,
           AccountExternalService accountExternalService,
           BankExternalService bankExternalService,
+          ITransactionProducer transactionProducer,
           IMapper mapper) : base(httpContextAccessor)
         {
             _transactionRepo = transactionRepo;
@@ -38,6 +44,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
             _mapper = mapper;
             _accountExternalService = accountExternalService;
             _bankExternalService = bankExternalService;
+            _transactionProducer = transactionProducer;
         }
 
         [ServiceFilter(typeof(PinRequiredAttribute))]
@@ -93,14 +100,12 @@ namespace HD.Wallet.Transaction.Service.Controllers
                     UseSourceAsLinkingBank = false,
                 };
 
-                return Ok(transaction);
-
+                return Ok(_mapper.Map<TransactionDto>(transaction));
             }
             else
             {
                 var linkingAccountBank = await _accountExternalService.GetAccountById(body.SourceAccountId)
                 ?? throw new AppException("Linking account not found");
-
 
                 var srcAccountBankNo = linkingAccountBank.AccountBank.BankAccountId;
                 var srcBankAccount = await _bankExternalService.GetCitizenAccount(linkingAccountBank.AccountBank.Bin, srcAccountBankNo)
@@ -156,7 +161,12 @@ namespace HD.Wallet.Transaction.Service.Controllers
                     UseSourceAsLinkingBank = true,
                 };
 
-                return Ok(transaction);
+                // send to bankingResource
+                // send to account
+                var transactionDto = _mapper.Map<TransactionDto>(transaction);
+
+                await _transactionProducer.ProduceTransaction(transactionDto);
+                return Ok(transactionDto);
             }
 
 
@@ -178,8 +188,6 @@ namespace HD.Wallet.Transaction.Service.Controllers
             //        transactionA
             //    });
             //}
-
-
         }
 
         [ServiceFilter(typeof(PinRequiredAttribute))]

@@ -1,4 +1,5 @@
 
+using HD.Wallet.BankingResource.Service.Consumers;
 using HD.Wallet.BankingResource.Service.Extensions;
 using HD.Wallet.BankingResource.Service.Infrastructure;
 using HD.Wallet.Shared;
@@ -17,12 +18,14 @@ namespace HD.Wallet.BankingResource.Service
             builder.Services.AddWebApiConfiguration(builder.Configuration);
 
             builder.Services.AddDbContext<BankingResourceDbContext>(options =>
+            {
                 options.UseMySql(
-                    builder.Configuration.GetConnectionString("MySQLConnection"),
-                    ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("MySQLConnection"))
-                ));
-
+                   builder.Configuration.GetConnectionString("MySQLConnection"),
+                   ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("MySQLConnection"))
+                );
+            });
             builder.Services.AddAutoMapperConfig<AutoMapperProfile>();
+            builder.Services.AddHostedService<TransactionConsumerService>();
             var app = builder.Build();
 
             app.AddCommonApplicationBuilder();

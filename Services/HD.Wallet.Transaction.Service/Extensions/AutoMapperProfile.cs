@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using HD.Wallet.Shared.SharedDtos.Transactions;
+using HD.Wallet.Transaction.Service.Infrastructure.Transactions;
 
 namespace HD.Wallet.Transaction.Service.Extensions
 {
@@ -6,8 +8,8 @@ namespace HD.Wallet.Transaction.Service.Extensions
 	{
 		public AutoMapperProfile()
 		{
-			//CreateMap<DiscountEntity, DiscountDto>();
-			//CreateMap<DiscountRuleEntity, DiscountRuleDto>();
+            CreateMap<AccountBankValueObject, TransactionAccountBankDto>();
+            CreateMap<TransactionEntity, TransactionDto>();
 		}
 	}
 }

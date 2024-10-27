@@ -42,14 +42,13 @@ namespace HD.Wallet.Shared
 				options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 			});
 
-            services
+			services
 				 .AddTransient<IHttpContextAccessor, HttpContextAccessor>()
 				 .AddDefaultOpenApi(configuration)
 				 .AddDefaultAuthentication(configuration)
 				 .AddLogger(configuration)
 				 .AddJwtExtension(configuration)
-				 .AddRedisConfiguration(configuration)
-				 .AddKafkaConfiguration(configuration);
+				 .AddRedisConfiguration(configuration);
 
 			return services;
 		}
@@ -188,23 +187,6 @@ namespace HD.Wallet.Shared
 			var redisConnectionString = section.GetRequiredValue("Title");
 			services.AddSingleton(new RedisConnectionProvider(configuration[redisConnectionString]));
 			services.AddTransient(typeof(IRedisRepository<,>), typeof(RedisRepository<,>));
-			return services;
-		}
-
-		public static IServiceCollection AddKafkaConfiguration(this IServiceCollection services, IConfiguration configuration)
-		{
-			var section = configuration.GetSection("KafkaProducerConfiguration");
-			if (!section.Exists())
-				return services;
-
-			var bootstrapServers = section.GetRequiredValue("BootstrapServers");
-			
-			var config = new ProducerConfig
-			{
-				BootstrapServers = bootstrapServers
-			};
-
-			services.AddSingleton(new ProducerBuilder<Null, string>(config).Build());
 			return services;
 		}
 
