@@ -11,5 +11,7 @@
         public string TransferContent { get; set; }
 
         public double TransferAmount { get; set; }
+
+        public bool UseLinkingBank { get; set; }
     }
 }

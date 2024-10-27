@@ -16,6 +16,10 @@ namespace HD.Wallet.Transaction.Service.Infrastructure.Transactions
 
         public AccountBankValueObject DestAccount { get; set; }
 
+        public bool IsBankingTransfer {  get; set; }
+
+        public bool UseSourceAsLinkingBank { get; set; }
+
         public DateTime TransactionDate { get; set; }
 
         public TransactionTypeEnum TransactionType { get; set; }

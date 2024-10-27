@@ -31,6 +31,8 @@ namespace HD.Wallet.Transaction.Service.Infrastructure
                    .HasConversion(
                         v => v.ToString(),
                         v => (TransactionStatusEnum)Enum.Parse(typeof(TransactionStatusEnum), v));
+
+           
             });
         }
     }

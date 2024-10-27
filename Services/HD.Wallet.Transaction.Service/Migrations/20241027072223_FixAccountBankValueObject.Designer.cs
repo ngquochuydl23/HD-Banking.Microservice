@@ -3,6 +3,7 @@ using System;
 using HD.Wallet.Transaction.Service.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HD.Wallet.Transaction.Service.Migrations
 {
     [DbContext(typeof(TransactionDbContext))]
-    partial class TransactionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241027072223_FixAccountBankValueObject")]
+    partial class FixAccountBankValueObject
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,9 +40,6 @@ namespace HD.Wallet.Transaction.Service.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<bool>("IsBankingTransfer")
-                        .HasColumnType("boolean");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
@@ -60,9 +60,6 @@ namespace HD.Wallet.Transaction.Service.Migrations
                     b.Property<string>("TransferContent")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<bool>("UseSourceAsLinkingBank")
-                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 

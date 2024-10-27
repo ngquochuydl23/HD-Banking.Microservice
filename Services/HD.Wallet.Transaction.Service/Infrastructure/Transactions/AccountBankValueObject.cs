@@ -8,7 +8,12 @@
 
         public string AccountNo { get; set; }
 
-
         public string BankName { get; set; }
+
+        public string? ShortName { get; set; }
+
+        public string? LogoUrl { get; set; }
+
+        public string BankFullName { get; set; }
     }
 }
