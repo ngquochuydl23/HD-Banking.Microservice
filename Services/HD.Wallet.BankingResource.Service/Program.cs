@@ -24,10 +24,8 @@ namespace HD.Wallet.BankingResource.Service
                    ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("MySQLConnection"))
                 );
             });
-            builder.Services.AddControllers();
             builder.Services.AddAutoMapperConfig<AutoMapperProfile>();
-            
-            builder.Services.AddHostedService<TransactionConsumerService>();
+          //  builder.Services.AddHostedService<TransactionConsumerService>();
             var app = builder.Build();
 
            

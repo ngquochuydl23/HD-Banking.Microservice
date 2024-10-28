@@ -8,7 +8,7 @@ services:
     restart: always
 
   kafka:
-    image: "confluentinc/cp-enterprise-kafka:5.2.1"
+    image: "confluentinc/cp-kafka"
     ports:
       - '9092:9092'
       - '29094:29094'
@@ -25,7 +25,7 @@ services:
     restart: always
 
   init-kafka:
-    image: "confluentinc/cp-enterprise-kafka:5.2.1"
+    image: "confluentinc/cp-kafka"
     depends_on:
       - kafka
     volumes:

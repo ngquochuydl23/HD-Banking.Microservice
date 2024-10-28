@@ -36,59 +36,44 @@ namespace HD.Wallet.BankingResource.Service.Consumers
                 EnableAutoCommit = true
             };
             _logger = logger;
-            _consumer = new ConsumerBuilder<string, string>(config).Build();
+            _consumer = new ConsumerBuilder<string, string>(config)
+                .SetErrorHandler((_, e) => Console.WriteLine($"Error: {e.Reason}"))
+                .SetPartitionsAssignedHandler((c, partitions) =>
+                {
+                    Console.WriteLine($"Assigned partitions: [{string.Join(", ", partitions)}]");
+                })
+                .SetPartitionsRevokedHandler((c, partitions) =>
+                {
+                    Console.WriteLine($"Revoking assignment: [{string.Join(", ", partitions)}]");
+                })
+                .Build();
             _configuration = configuration;
             _dbContext = dbContext;
         }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("TransactionConsumerService is hosted.");
-
-            _cts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
-            _executingTask = Task.Run(() => ConsumeMessages(_cts.Token));
-
-         
-            return _executingTask;
-        }
-
-
-        private async Task ConsumeMessages(CancellationToken stoppingToken)
-        {
-            _logger.LogInformation("Kafka Consumer Service is starting.");
-
-            try
+            _logger.LogInformation("OrderProcessing Service Started");
+            _consumer.Subscribe(_configuration["KafkaTransferConsumer:Topic"]);
+            while (!stoppingToken.IsCancellationRequested)
             {
-                _consumer.Subscribe(_configuration["KafkaTransferConsumer:Topic"]);
+                var result = _consumer.Consume(stoppingToken);
+                var transaction = JsonSerializer.Deserialize<TransactionDto>(result.Message.Value);
 
-                while (!stoppingToken.IsCancellationRequested)
+
+                if (transaction != null)
                 {
-                    try
-                    {
-                        var result = _consumer.Consume(stoppingToken);
-                        var transaction = JsonSerializer.Deserialize<TransactionDto>(result.Message.Value);
-                        if (transaction != null)
-                        {
-                            _logger.LogInformation($"Received transaction: {transaction.Id} - Amount: {transaction.Amount}");
 
-                            await UpdateAccountBalanceViaBankingTransfer(transaction);
-                            _consumer.Commit(result);
-                        }
-                    }
-                    catch (ConsumeException ex)
-                    {
-                        _logger.LogError($"Error consuming message: {ex.Error.Reason}");
-                    }
+                    _logger.LogInformation($"Received transaction: {transaction.Id} - Amount: {transaction.Amount}");
+
+                   // await UpdateAccountBalanceViaBankingTransfer(transaction);
+                    _consumer.Commit(result);
+
                 }
-            }
-            catch (OperationCanceledException kafkaException)
-            {
-                _logger.LogError("Kafka Consumer Service is stopping by exception.", kafkaException.Message, kafkaException);
-            }
-            finally
-            {
-                _logger.LogInformation("Kafka Consumer Service is stopping.");
-                _consumer.Close();
+                else
+                {
+                    await Task.Delay(2000);
+                }
             }
         }
 
@@ -120,18 +105,6 @@ namespace HD.Wallet.BankingResource.Service.Consumers
             }
         }
 
-        public override async Task StopAsync(CancellationToken stoppingToken)
-        {
-            _logger.LogInformation("Consume Scoped Service Hosted Service is stopping.");
-            _cts.Cancel();
-            await base.StopAsync(stoppingToken);
-        }
 
-        public override void Dispose()
-        {
-            _consumer.Close();
-            _consumer.Dispose();
-            base.Dispose();
-        }
     }
 }
