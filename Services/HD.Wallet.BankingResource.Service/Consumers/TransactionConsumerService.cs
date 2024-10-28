@@ -20,6 +20,9 @@ namespace HD.Wallet.BankingResource.Service.Consumers
         private readonly ILogger<TransactionConsumerService> _logger;
         private readonly BankingResourceDbContext _dbContext;
 
+        private Task _executingTask;
+        private CancellationTokenSource _cts;
+
         public TransactionConsumerService(
             IConfiguration configuration,
             ILogger<TransactionConsumerService> logger,
@@ -29,7 +32,6 @@ namespace HD.Wallet.BankingResource.Service.Consumers
             {
                 GroupId = configuration["KafkaTransferConsumer:GroupId"],
                 BootstrapServers = configuration["KafkaTransferConsumer:BootstrapServers"],
-                SecurityProtocol = SecurityProtocol.Plaintext,
                 AutoOffsetReset = AutoOffsetReset.Latest,
                 EnableAutoCommit = true
             };
@@ -39,9 +41,20 @@ namespace HD.Wallet.BankingResource.Service.Consumers
             _dbContext = dbContext;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            _logger.LogInformation("TransactionConsumerService is hosted.");
 
+            _cts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
+            _executingTask = Task.Run(() => ConsumeMessages(_cts.Token));
+
+         
+            return _executingTask;
+        }
+
+
+        private async Task ConsumeMessages(CancellationToken stoppingToken)
+        {
             _logger.LogInformation("Kafka Consumer Service is starting.");
 
             try
@@ -68,17 +81,16 @@ namespace HD.Wallet.BankingResource.Service.Consumers
                     }
                 }
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException kafkaException)
             {
-                _logger.LogInformation("Kafka Consumer Service is stopping.");
+                _logger.LogError("Kafka Consumer Service is stopping by exception.", kafkaException.Message, kafkaException);
             }
             finally
             {
+                _logger.LogInformation("Kafka Consumer Service is stopping.");
                 _consumer.Close();
             }
         }
-
-       
 
         private async Task UpdateAccountBalanceViaBankingTransfer(TransactionDto transaction)
         {
@@ -106,6 +118,13 @@ namespace HD.Wallet.BankingResource.Service.Consumers
                 transactionScope.Complete();
 
             }
+        }
+
+        public override async Task StopAsync(CancellationToken stoppingToken)
+        {
+            _logger.LogInformation("Consume Scoped Service Hosted Service is stopping.");
+            _cts.Cancel();
+            await base.StopAsync(stoppingToken);
         }
 
         public override void Dispose()
