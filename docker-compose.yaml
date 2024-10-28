@@ -1,8 +1,42 @@
 version: '3.4'
 services:
+  zookeeper:
+    image: "confluentinc/cp-zookeeper:5.2.1"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    restart: always
+
+  kafka:
+    image: "confluentinc/cp-enterprise-kafka:5.2.1"
+    ports:
+      - '9092:9092'
+      - '29094:29094'
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 0
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://server-1.pgonevn.com:9092
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+    restart: always
+
+  init-kafka:
+    image: "confluentinc/cp-enterprise-kafka:5.2.1"
+    depends_on:
+      - kafka
+    volumes:
+      - ./kafka-init-script.sh:/kafka-init-script.sh
+    entrypoint: [ "/bin/sh", "/kafka-init-script.sh" ]
+
   hd-wallet.gateways-api:
     image: hd-wallet.gateways-api
     container_name: hd-wallet.gateways-api
+    depends_on:
+      - kafka
     build:
       context: ./
       dockerfile: Gateways/HD.Wallet.Gateway/Dockerfile
@@ -15,6 +49,8 @@ services:
   hd-wallet.account-api:
     image: hd-wallet.account-api
     container_name: hd-wallet.account-api
+    depends_on:
+      - kafka
     build:
       context: ./
       dockerfile: Services/HD.Wallet.Account.Service/Dockerfile
@@ -27,6 +63,8 @@ services:
   hd-wallet.transaction-api:
     image: hd-wallet.transaction-api
     container_name: hd-wallet.transaction-api
+    depends_on:
+      - kafka
     build:
       context: ./
       dockerfile: Services/HD.Wallet.Transaction.Service/Dockerfile
@@ -39,6 +77,8 @@ services:
   hd-wallet.identity-api:
     image: hd-wallet.identity-api
     container_name: hd-wallet.identity-api
+    depends_on:
+      - kafka
     build:
       context: ./
       dockerfile: Services/HD.Wallet.Identity.Service/Dockerfile
@@ -51,6 +91,7 @@ services:
   hd-wallet.banking-resource-api:
     image: hd-wallet.banking-resource-api
     container_name: hd-wallet.banking-resource-api
+
     build:
       context: ./
       dockerfile: Services/HD.Wallet.BankingResource.Service/Dockerfile
