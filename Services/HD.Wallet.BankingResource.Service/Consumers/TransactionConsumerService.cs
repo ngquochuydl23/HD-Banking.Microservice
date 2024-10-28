@@ -29,10 +29,9 @@ namespace HD.Wallet.BankingResource.Service.Consumers
             {
                 GroupId = configuration["KafkaTransferConsumer:GroupId"],
                 BootstrapServers = configuration["KafkaTransferConsumer:BootstrapServers"],
-                SecurityProtocol = SecurityProtocol.Plaintext,
+                SecurityProtocol = SecurityProtocol.SaslPlaintext,
                 AutoOffsetReset = AutoOffsetReset.Latest,
-                EnableAutoCommit = true, // Tắt commit tự động.
-                BrokerAddressFamily = BrokerAddressFamily.V4
+                EnableAutoCommit = true
             };
             _logger = logger;
             _consumer = new ConsumerBuilder<string, string>(config).Build();

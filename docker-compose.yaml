@@ -19,7 +19,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://server-1.pgonevn.com:9092
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
     restart: always
@@ -91,7 +91,9 @@ services:
   hd-wallet.banking-resource-api:
     image: hd-wallet.banking-resource-api
     container_name: hd-wallet.banking-resource-api
-
+    depends_on:
+      - kafka
+      - init-kafka
     build:
       context: ./
       dockerfile: Services/HD.Wallet.BankingResource.Service/Dockerfile
