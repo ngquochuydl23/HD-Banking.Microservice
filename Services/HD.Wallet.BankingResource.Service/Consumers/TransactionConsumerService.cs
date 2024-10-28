@@ -20,9 +20,6 @@ namespace HD.Wallet.BankingResource.Service.Consumers
         private readonly ILogger<TransactionConsumerService> _logger;
         private readonly BankingResourceDbContext _dbContext;
 
-        private Task _executingTask;
-        private CancellationTokenSource _cts;
-
         public TransactionConsumerService(
             IConfiguration configuration,
             ILogger<TransactionConsumerService> logger,
@@ -53,27 +50,47 @@ namespace HD.Wallet.BankingResource.Service.Consumers
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("OrderProcessing Service Started");
+            await Task.Yield();
+
+            _logger.LogInformation("TransferConsumer Service Started");
             _consumer.Subscribe(_configuration["KafkaTransferConsumer:Topic"]);
+
+
             while (!stoppingToken.IsCancellationRequested)
             {
-                var result = _consumer.Consume(stoppingToken);
-                var transaction = JsonSerializer.Deserialize<TransactionDto>(result.Message.Value);
-
-
-                if (transaction != null)
+                try
                 {
+                    var result = _consumer.Consume(stoppingToken);
+                    var transaction = JsonSerializer.Deserialize<TransactionDto>(result.Message.Value);
 
-                    _logger.LogInformation($"Received transaction: {transaction.Id} - Amount: {transaction.Amount}");
+                    if (transaction != null)
+                    {
+                        _logger.LogInformation($"Received transaction: {transaction.Id} - Amount: {transaction.Amount}");
 
-                   // await UpdateAccountBalanceViaBankingTransfer(transaction);
-                    _consumer.Commit(result);
 
+                        if (transaction.IsBankingTransfer)
+                        {
+                            await UpdateAccountBalanceViaBankingTransfer(transaction);
+                        }
+                 
+                        _consumer.Commit(result);
+                    }
+                    else
+                    {
+                        _logger.LogWarning("Received null transaction, retrying in 2 seconds...");
+                        await Task.Delay(2000, stoppingToken);
+                    }
                 }
-                else
+                catch (OperationCanceledException)
                 {
-                    await Task.Delay(2000);
+                    _logger.LogInformation("TransactionConsumer Service is stopping.");
                 }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "An error occurred while processing transactions.");
+                    await Task.Delay(2000, stoppingToken);
+                }
+
             }
         }
 

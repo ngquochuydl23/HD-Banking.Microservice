@@ -203,7 +203,6 @@ namespace HD.Wallet.Shared
             app.UseAuthentication();
 			app.UseAuthorization();
 			app.MapControllers();
-			app.Run();
 
 
 			return app;

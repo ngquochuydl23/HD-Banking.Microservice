@@ -25,11 +25,12 @@ namespace HD.Wallet.BankingResource.Service
                 );
             });
             builder.Services.AddAutoMapperConfig<AutoMapperProfile>();
-          //  builder.Services.AddHostedService<TransactionConsumerService>();
+            builder.Services.AddHostedService<TransactionConsumerService>();
             var app = builder.Build();
 
            
             app.AddCommonApplicationBuilder();
+            app.Run();
         }
     }
 }
