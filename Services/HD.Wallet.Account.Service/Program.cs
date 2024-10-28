@@ -1,3 +1,4 @@
+using HD.Wallet.Account.Service.Consumers;
 using HD.Wallet.Account.Service.Extensions;
 using HD.Wallet.Account.Service.ExternalServices;
 using HD.Wallet.Account.Service.Infrastructure;
@@ -28,8 +29,10 @@ namespace HD.Wallet.Account.Service
             builder.Services.AddTransient<IdCardExternalService>();
             builder.Services.AddTransient<BankExternalService>();
             builder.Services.AddScoped<RequestOpenAccountValidator>();
-            var app = builder.Build();
+			builder.Services.AddHostedService<TransactionConsumerService>();
 
+
+            var app = builder.Build();
 			app.AddCommonApplicationBuilder();
             app.Run();
 		}

@@ -100,7 +100,10 @@ namespace HD.Wallet.Transaction.Service.Controllers
                     UseSourceAsLinkingBank = false,
                 };
 
-                return Ok(_mapper.Map<TransactionDto>(transaction));
+                var transactionDto = _mapper.Map<TransactionDto>(transaction);
+
+                await _transactionProducer.ProduceTransaction(transactionDto);
+                return Ok(transactionDto);
             }
             else
             {

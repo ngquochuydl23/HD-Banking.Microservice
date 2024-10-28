@@ -1,32 +1,41 @@
-﻿using Confluent.Kafka;
-using HD.Wallet.BankingResource.Service.Infrastructure;
+﻿
+using Confluent.Kafka;
+using HD.Wallet.Account.Service.Infrastructure.Entities.Accounts;
 using HD.Wallet.Shared.Exceptions;
+using HD.Wallet.Shared.Seedworks;
 using HD.Wallet.Shared.SharedDtos.Transactions;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
-using System.Transactions;
 
-namespace HD.Wallet.BankingResource.Service.Consumers
+namespace HD.Wallet.Account.Service.Consumers
 {
     public class TransactionConsumerService : BackgroundService
     {
+
         private readonly IConfiguration _configuration;
         private readonly IConsumer<string, string> _consumer;
         private readonly ILogger<TransactionConsumerService> _logger;
-        private readonly BankingResourceDbContext _dbContext;
+        private readonly IEfRepository<AccountEntity, string> _accountRepo;
+        private readonly IUnitOfWork _unitOfWork;
+
 
         public TransactionConsumerService(
-            IConfiguration configuration,
-            ILogger<TransactionConsumerService> logger,
-            BankingResourceDbContext dbContext)
+               IUnitOfWork unitOfWork,
+               IConfiguration configuration,
+               ILogger<TransactionConsumerService> logger,
+               IEfRepository<AccountEntity, string> accountRepo)
         {
+            _unitOfWork = unitOfWork;
+            _accountRepo = accountRepo;
+            _configuration = configuration;
             var config = new ConsumerConfig
             {
-                GroupId = configuration["KafkaTransferConsumer:GroupId"],
-                BootstrapServers = configuration["KafkaTransferConsumer:BootstrapServers"],
+                GroupId = _configuration["KafkaTransferConsumer:GroupId"],
+                BootstrapServers = _configuration["KafkaTransferConsumer:BootstrapServers"],
                 AutoOffsetReset = AutoOffsetReset.Latest,
                 EnableAutoCommit = true
             };
+
             _logger = logger;
             _consumer = new ConsumerBuilder<string, string>(config)
                 .SetErrorHandler((_, e) => Console.WriteLine($"Error: {e.Reason}"))
@@ -39,8 +48,6 @@ namespace HD.Wallet.BankingResource.Service.Consumers
                     Console.WriteLine($"Revoking assignment: [{string.Join(", ", partitions)}]");
                 })
                 .Build();
-            _configuration = configuration;
-            _dbContext = dbContext;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -61,9 +68,7 @@ namespace HD.Wallet.BankingResource.Service.Consumers
                     if (transaction != null)
                     {
                         _logger.LogInformation($"Received transaction: {transaction.Id} - Amount: {transaction.Amount}");
-
-
-                        await UpdateAccountBalance(transaction);
+                        UpdateBalance(transaction);
                         _consumer.Commit(result);
                     }
                     else
@@ -83,37 +88,39 @@ namespace HD.Wallet.BankingResource.Service.Consumers
                 }
 
             }
+
+
         }
-
-        private async Task UpdateAccountBalance(TransactionDto transaction)
+        private void UpdateBalance(TransactionDto transaction)
         {
-            if (!transaction.IsBankingTransfer && !transaction.UseSourceAsLinkingBank)
-                return;
-
-            using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            using (_unitOfWork.Begin())
             {
-                if (transaction.UseSourceAsLinkingBank)
+                if (!transaction.UseSourceAsLinkingBank)
                 {
-                    var sourceAccountBank = await _dbContext.CitizenAccountBanks
-                         .AsTracking()
-                         .FirstOrDefaultAsync(x => x.AccountNo.Equals(transaction.SourceAccount.AccountNo))
-                             ?? throw new KafkaAppException("Source account not found");
+                    var sourceWallet = _accountRepo
+                        .GetQueryable()
+                        .FirstOrDefault(x => !x.IsBankLinking
+                            && x.AccountBank.BankAccountId.Equals(transaction.SourceAccount.AccountNo))
+                                ?? throw new KafkaAppException("Wallet source not found");
 
-                    sourceAccountBank.Balance -= transaction.Amount;
-                    await _dbContext.SaveChangesAsync();
+                    sourceWallet.WalletBalance -= transaction.Amount;
+
+                    _accountRepo.SaveChanges();
                 }
 
-                if (transaction.IsBankingTransfer)
+                if (!transaction.IsBankingTransfer)
                 {
-                    var destAccountBank = await _dbContext.CitizenAccountBanks
-                       .AsTracking()
-                       .FirstOrDefaultAsync(x => x.AccountNo.Equals(transaction.DestAccount.AccountNo))
-                           ?? throw new KafkaAppException("Destination account not found");
+                    var destWallet = _accountRepo
+                        .GetQueryable()
+                        .FirstOrDefault(x => !x.IsBankLinking
+                            && x.AccountBank.BankAccountId.Equals(transaction.DestAccount.AccountNo))
+                                ?? throw new KafkaAppException("Wallet source not found");
 
-                    destAccountBank.Balance += transaction.Amount;
-                    await _dbContext.SaveChangesAsync();
+                    destWallet.WalletBalance += transaction.Amount;
+
+                    _accountRepo.SaveChanges();
                 }
-                transactionScope.Complete();
+                _unitOfWork.Complete();
             }
         }
     }
