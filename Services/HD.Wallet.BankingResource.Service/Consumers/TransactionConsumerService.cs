@@ -29,7 +29,7 @@ namespace HD.Wallet.BankingResource.Service.Consumers
             {
                 GroupId = configuration["KafkaTransferConsumer:GroupId"],
                 BootstrapServers = configuration["KafkaTransferConsumer:BootstrapServers"],
-                SecurityProtocol = SecurityProtocol.SaslPlaintext,
+                SecurityProtocol = SecurityProtocol.Plaintext,
                 AutoOffsetReset = AutoOffsetReset.Latest,
                 EnableAutoCommit = true
             };
