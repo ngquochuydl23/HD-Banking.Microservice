@@ -131,7 +131,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
                     throw new AppException("Balance is not enough to transfer");
                 }
 
-                var transaction = new TransactionEntity()
+                var transaction = _transactionRepo.Insert(new TransactionEntity()
                 {
                     Id = Guid.NewGuid().ToString(),
                     Amount = body.TransferAmount,
@@ -162,77 +162,24 @@ namespace HD.Wallet.Transaction.Service.Controllers
                     TransferContent = body.TransferContent,
                     IsBankingTransfer = true,
                     UseSourceAsLinkingBank = true,
-                };
+                });
 
-                // send to bankingResource
-                // send to account
+
+
                 var transactionDto = _mapper.Map<TransactionDto>(transaction);
 
                 await _transactionProducer.ProduceTransaction(transactionDto);
                 return Ok(transactionDto);
             }
-
-
-
-
-
-            //using (_unitOfWork.Begin())
-            //{
-
-
-            //    // broadcast kafka to BankingResouce the amount of money if linking account source or banking transfer
-            //    // broadcast Kafka to Account 
-
-
-            //    return Ok(new
-            //    {
-            //        sourceBank,
-            //        destinationBank,
-            //        transactionA
-            //    });
-            //}
         }
 
         [ServiceFilter(typeof(PinRequiredAttribute))]
-        [HttpPost("InteralTransfer")]
+        [HttpPost("InternalTransfer")]
         public async Task<IActionResult> InternalTransfer(
            [FromHeader(Name = "X-EncryptedPin")] string pin,
-           [FromBody] RequestTransferDto body)
+           [FromBody] RequestInternalTransferDto body)
         {
-            using (_unitOfWork.Begin())
-            {
-                if (body.SourceAccountId.Equals(body.DestinationAccoutId))
-                {
-                    throw new AppException("Source bank and destination bank is the same");
-                }
-
-                var sourceBank = await _accountExternalService.GetAccountById(body.SourceAccountId)
-                ?? throw new AppException("Source account not found");
-
-                if (!sourceBank.UserId.Equals(LoggingUserId))
-                {
-                    throw new AppException("The source account is not yours");
-                }
-
-                var destinationBank = await _accountExternalService.GetAccountById(body.DestinationAccoutId)
-                    ?? throw new AppException("Destination account not found");
-
-
-                if (body.TransferAmount > sourceBank.WalletBalance)
-                {
-                    throw new AppException("Balance is not enough to transfer");
-                }
-
-                // broadcast kafka to BankingResouce the amount of money if linking account source or banking transfer
-                // broadcast Kafka to Account 
-
-                return Ok(new
-                {
-                    sourceBank,
-                    destinationBank,
-                    //transactionA
-                });
-            }
+            return Ok();
         }
     }
 }

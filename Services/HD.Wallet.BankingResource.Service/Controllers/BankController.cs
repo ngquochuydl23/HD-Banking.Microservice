@@ -39,7 +39,9 @@ namespace HD.Wallet.BankingResource.Service.Controllers
             var banks = _dbContext.Banks
                 .AsNoTracking()
                 .AsNoTracking()
+                .Where(x => !x.Bin.Equals("999999.0"))
                 .Where(b =>
+                    EF.Functions.Like(b.Code, $"%{search}%") ||
                     EF.Functions.Like(b.Name, $"%{search}%") ||
                     EF.Functions.Like(b.ShortName, $"%{search}%"))
                 .ToList();
@@ -52,6 +54,7 @@ namespace HD.Wallet.BankingResource.Service.Controllers
         {
             var banks = _dbContext.Banks
                .AsNoTracking()
+               .Where(x => !x.Bin.Equals("999999.0"))
                .OrderBy(x => x.Top)
                .ToList();
 
