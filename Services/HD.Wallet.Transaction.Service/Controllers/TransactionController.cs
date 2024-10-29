@@ -43,6 +43,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
                 .GetQueryableNoTracking()
                 .WhereIf(!string.IsNullOrEmpty(filterQuery.TransactionStatus), x => x.TransactionStatus.Equals(filterQuery.TransactionStatus))
                 .WhereIf(!string.IsNullOrEmpty(filterQuery.TransactionType), x => x.TransactionType.Equals(filterQuery.TransactionType))
+                .OrderByDescending(x => x.TransactionDate)
                 .ToList();
 
             return Ok(_mapper.Map<IList<TransactionDto>>(transactions));

@@ -54,6 +54,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
            [FromBody] RequestBankTransferDto body)
         {
 
+
             var destBankAccount = await _bankExternalService.GetCitizenAccount(body.DestBin, body.DestBankAccountNo)
                 ?? throw new AppException("Destination bank account not found");
 
