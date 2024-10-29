@@ -4,6 +4,7 @@ using HD.Wallet.Shared.Attributes;
 using HD.Wallet.Shared.Exceptions;
 using HD.Wallet.Shared.Queries;
 using HD.Wallet.Shared.Seedworks;
+using HD.Wallet.Shared.SharedDtos.Transactions;
 using HD.Wallet.Transaction.Service.Dtos.Funds;
 using HD.Wallet.Transaction.Service.Dtos.Transfers;
 using HD.Wallet.Transaction.Service.Dtos.Withdrawls;
@@ -19,7 +20,6 @@ namespace HD.Wallet.Transaction.Service.Controllers
     [Route("transaction-api/[controller]")]
     public class TransactionController : BaseController
     {
-        private readonly AccountExternalService _accountExternalService;
         private readonly IEfRepository<TransactionEntity, string> _transactionRepo;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -28,13 +28,11 @@ namespace HD.Wallet.Transaction.Service.Controllers
           IEfRepository<TransactionEntity, string> transactionRepo,
           IHttpContextAccessor httpContextAccessor,
           IUnitOfWork unitOfWork,
-          AccountExternalService accountExternalService,
           IMapper mapper) : base(httpContextAccessor)
         {
             _transactionRepo = transactionRepo;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _accountExternalService = accountExternalService;
         }
 
 
@@ -47,7 +45,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
                 .WhereIf(!string.IsNullOrEmpty(filterQuery.TransactionType), x => x.TransactionType.Equals(filterQuery.TransactionType))
                 .ToList();
 
-            return Ok(transactions);
+            return Ok(_mapper.Map<IList<TransactionDto>>(transactions));
         }
 
         [HttpGet("{id}")]
@@ -58,7 +56,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
                 .FirstOrDefault(x => x.Id.Equals(id))
                     ?? throw new AppException("Transaction not found");
 
-            return Ok(transaction);
+            return Ok(_mapper.Map<TransactionDto>(transaction));
         }
 
        

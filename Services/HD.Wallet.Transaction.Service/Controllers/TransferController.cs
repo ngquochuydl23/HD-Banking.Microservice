@@ -68,7 +68,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
                     throw new AppException("Balance is not enough to transfer");
                 }
 
-                var transaction = new TransactionEntity()
+                var transaction = _transactionRepo.Insert(new TransactionEntity()
                 {
                     Id = Guid.NewGuid().ToString(),
                     Amount = body.TransferAmount,
@@ -98,7 +98,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
                     TransferContent = body.TransferContent,
                     IsBankingTransfer = true,
                     UseSourceAsLinkingBank = false,
-                };
+                });
 
                 var transactionDto = _mapper.Map<TransactionDto>(transaction);
 
