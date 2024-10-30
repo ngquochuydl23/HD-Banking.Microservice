@@ -216,7 +216,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
                     throw new AppException("Balance is not enough to transfer");
                 }
 
-                var transaction = new TransactionEntity()
+                var transaction = _transactionRepo.Insert(new TransactionEntity()
                 {
                     Id = Guid.NewGuid().ToString(),
                     Amount = body.TransferAmount,
@@ -246,7 +246,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
                     TransferContent = body.TransferContent,
                     IsBankingTransfer = false,
                     UseSourceAsLinkingBank = false,
-                };
+                });
 
                 var transactionDto = _mapper.Map<TransactionDto>(transaction);
 
@@ -268,7 +268,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
                 var srcBankAccount = await _bankExternalService.GetCitizenAccount(linkingAccountBank.AccountBank.Bin, srcAccountBankNo)
                         ?? throw new AppException("Source bank account not found");
 
-                var transaction = new TransactionEntity()
+                var transaction = _transactionRepo.Insert(new TransactionEntity()
                 {
                     Id = Guid.NewGuid().ToString(),
                     Amount = body.TransferAmount,
@@ -299,7 +299,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
                     TransferContent = body.TransferContent,
                     IsBankingTransfer = false,
                     UseSourceAsLinkingBank = false,
-                };
+                });
 
                 var transactionDto = _mapper.Map<TransactionDto>(transaction);
 
