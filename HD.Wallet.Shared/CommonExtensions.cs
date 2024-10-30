@@ -59,7 +59,7 @@ namespace HD.Wallet.Shared
             var environment = configuration["ASPNETCORE_ENVIRONMENT"] ?? "Production";
             services.AddDbContext<T>(x =>
 			{
-                if (environment.Equals("Development", StringComparison.OrdinalIgnoreCase))
+                if (!environment.Equals("Development", StringComparison.OrdinalIgnoreCase))
                 {
                     x.EnableSensitiveDataLogging();
                 }

@@ -297,7 +297,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
                     TransactionStatus = TransactionStatusEnum.Completed,
                     Description = "",
                     TransferContent = body.TransferContent,
-                    IsBankingTransfer = false,
+                    IsBankingTransfer = true,
                     UseSourceAsLinkingBank = false,
                 });
 
