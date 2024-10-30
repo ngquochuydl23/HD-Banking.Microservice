@@ -83,36 +83,18 @@ namespace HD.Wallet.Account.Service.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("FindAccount")]
-        public IActionResult FindAccount([FromBody] FindAccountDto body)
+        [HttpGet("Wallet/{accountNo}")]
+        public IActionResult GetWalletAccountByNo(string accountNo)
         {
-
-            if (body.IsBankLinking && !string.IsNullOrEmpty(body.BankName))
-            {
-                var account = _accountRepo
-                    .GetQueryableNoTracking()
-                    .FirstOrDefault(x =>
-                        x.AccountBank.BankAccountId.Equals(body.AccountNo)
-                        && x.IsBankLinking
-                        && x.AccountBank.BankName.Equals(body.BankName))
-                            ?? throw new AppException("Account not found");
-
-                return Ok(account);
-            }
-            else
-            {
-
-                var account = _accountRepo
+            var account = _accountRepo
                    .GetQueryableNoTracking()
-                   .FirstOrDefault(x => x.AccountBank.BankAccountId.Equals(body.AccountNo) && !x.IsBankLinking)
+                   .FirstOrDefault(x => !x.IsBankLinking && x.AccountBank.BankAccountId.Equals(accountNo))
                            ?? throw new AppException("Account not found");
 
-                return Ok(account);
-
-            }
+            return Ok(account);
         }
 
-        [HttpGet("Balance")]
+        [HttpGet("Wallet/Balance")]
         public IActionResult GetAccountBalance()
         {
             var account = _accountRepo

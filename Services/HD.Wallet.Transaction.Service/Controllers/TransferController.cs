@@ -180,6 +180,17 @@ namespace HD.Wallet.Transaction.Service.Controllers
            [FromHeader(Name = "X-EncryptedPin")] string pin,
            [FromBody] RequestInternalTransferDto body)
         {
+
+            if (!body.UseLinkingBank)
+            {
+                var walletAccount = await _accountExternalService.GetAccountById(body.SourceAccountId)
+                    ?? throw new AppException("Wallet account not found");
+
+                if (walletAccount.WalletBalance < body.TransferAmount)
+                {
+                    throw new AppException("Balance is not enough to transfer");
+                }
+            }
             return Ok();
         }
     }
