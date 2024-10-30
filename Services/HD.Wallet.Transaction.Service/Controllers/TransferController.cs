@@ -61,10 +61,15 @@ namespace HD.Wallet.Transaction.Service.Controllers
 
             if (!body.UseLinkingBank)
             {
-                var walletAccount = await _accountExternalService.GetAccountById(body.SourceAccountId)
+                var srcWalletAccount = await _accountExternalService.GetAccountById(body.SourceAccountId)
                     ?? throw new AppException("Wallet account not found");
 
-                if (walletAccount.WalletBalance < body.TransferAmount)
+                if (srcWalletAccount.IsBankLinking)
+                {
+                    throw new AppException("Transfer failed. This source is linking account while `body.UseLinkingBank` is false");
+                }
+
+                if (srcWalletAccount.WalletBalance < body.TransferAmount)
                 {
                     throw new AppException("Balance is not enough to transfer");
                 }
@@ -75,12 +80,12 @@ namespace HD.Wallet.Transaction.Service.Controllers
                     Amount = body.TransferAmount,
                     SourceAccount = new AccountBankValueObject
                     {
-                        Bin = walletAccount.AccountBank.Bin,
-                        AccountNo = walletAccount.AccountBank.BankAccountId,
-                        BankName = walletAccount.AccountBank.BankName,
-                        OwnerName = walletAccount.AccountBank.BankOwnerName,
-                        BankFullName = walletAccount.AccountBank.BankFullName,
-                        LogoUrl = walletAccount.AccountBank.LogoUrl
+                        Bin = srcWalletAccount.AccountBank.Bin,
+                        AccountNo = srcWalletAccount.AccountBank.BankAccountId,
+                        BankName = srcWalletAccount.AccountBank.BankName,
+                        OwnerName = srcWalletAccount.AccountBank.BankOwnerName,
+                        BankFullName = srcWalletAccount.AccountBank.BankFullName,
+                        LogoUrl = srcWalletAccount.AccountBank.LogoUrl
                     },
                     DestAccount = new AccountBankValueObject
                     {
@@ -109,7 +114,12 @@ namespace HD.Wallet.Transaction.Service.Controllers
             else
             {
                 var linkingAccountBank = await _accountExternalService.GetAccountById(body.SourceAccountId)
-                ?? throw new AppException("Linking account not found");
+                    ?? throw new AppException("Linking account not found");
+
+                if (!linkingAccountBank.IsBankLinking)
+                {
+                    throw new AppException("Transfer failed. This source is not linking account while `body.UseLinkingBank` is true");
+                }
 
                 var srcAccountBankNo = linkingAccountBank.AccountBank.BankAccountId;
                 var srcBankAccount = await _bankExternalService.GetCitizenAccount(linkingAccountBank.AccountBank.Bin, srcAccountBankNo)
@@ -181,17 +191,121 @@ namespace HD.Wallet.Transaction.Service.Controllers
            [FromBody] RequestInternalTransferDto body)
         {
 
+            var destInternalAccount = await _accountExternalService
+                .GetWalletAccountByNo(body.DestWalletAccountNo)
+                    ?? throw new AppException("Destination wallet account not found");
+
+
             if (!body.UseLinkingBank)
             {
                 var walletAccount = await _accountExternalService.GetAccountById(body.SourceAccountId)
                     ?? throw new AppException("Wallet account not found");
+                
+                if (walletAccount.IsBankLinking)
+                {
+                    throw new AppException("Transfer failed. This source is linking account while `body.UseLinkingBank` is false");
+                }
+
+                if (walletAccount.IsBlocked)
+                {
+                    throw new AppException("Transfer failed. Your account is blocked");
+                }
 
                 if (walletAccount.WalletBalance < body.TransferAmount)
                 {
                     throw new AppException("Balance is not enough to transfer");
                 }
+
+                var transaction = new TransactionEntity()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Amount = body.TransferAmount,
+                    SourceAccount = new AccountBankValueObject
+                    {
+                        Bin = walletAccount.AccountBank.Bin,
+                        AccountNo = walletAccount.AccountBank.BankAccountId,
+                        BankName = walletAccount.AccountBank.BankName,
+                        OwnerName = walletAccount.AccountBank.BankOwnerName,
+                        BankFullName = walletAccount.AccountBank.BankFullName,
+                        LogoUrl = walletAccount.AccountBank.LogoUrl
+                    },
+                    DestAccount = new AccountBankValueObject
+                    {
+                        Bin = destInternalAccount.AccountBank.Bin,
+                        AccountNo = destInternalAccount.AccountBank.BankAccountId,
+                        BankName = destInternalAccount.AccountBank.BankName,
+                        OwnerName = destInternalAccount.AccountBank.BankOwnerName,
+                        ShortName = destInternalAccount.AccountBank.BankName,
+                        BankFullName = destInternalAccount.AccountBank.BankFullName,
+                        LogoUrl = "",
+                    },
+                    TransactionDate = DateTime.UtcNow,
+                    TransactionType = TransactionTypeEnum.Transfer,
+                    TransactionStatus = TransactionStatusEnum.Completed,
+                    Description = "",
+                    TransferContent = body.TransferContent,
+                    IsBankingTransfer = false,
+                    UseSourceAsLinkingBank = false,
+                };
+
+                var transactionDto = _mapper.Map<TransactionDto>(transaction);
+
+                await _transactionProducer.ProduceTransaction(transactionDto);
+                return Ok(transactionDto);
+
+            } 
+            else
+            {
+                var linkingAccountBank = await _accountExternalService.GetAccountById(body.SourceAccountId)
+                    ?? throw new AppException("Linking account not found");
+
+                if (!linkingAccountBank.IsBankLinking)
+                {
+                    throw new AppException("Transfer failed. This source is not linking account while `body.UseLinkingBank` is true");
+                }
+
+                var srcAccountBankNo = linkingAccountBank.AccountBank.BankAccountId;
+                var srcBankAccount = await _bankExternalService.GetCitizenAccount(linkingAccountBank.AccountBank.Bin, srcAccountBankNo)
+                        ?? throw new AppException("Source bank account not found");
+
+                var transaction = new TransactionEntity()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Amount = body.TransferAmount,
+                    SourceAccount = new AccountBankValueObject
+                    {
+                        Bin = srcBankAccount.Bin,
+                        AccountNo = srcBankAccount.AccountNo,
+                        BankName = srcBankAccount.BankName,
+                        OwnerName = srcBankAccount.OwnerName,
+                        ShortName = srcBankAccount.Bank.ShortName,
+                        BankFullName = srcBankAccount.Bank.Name,
+                        LogoUrl = srcBankAccount.Bank.LogoApp
+                    },
+                    DestAccount = new AccountBankValueObject
+                    {
+                        Bin = destInternalAccount.AccountBank.Bin,
+                        AccountNo = destInternalAccount.AccountBank.BankAccountId,
+                        BankName = destInternalAccount.AccountBank.BankName,
+                        OwnerName = destInternalAccount.AccountBank.BankOwnerName,
+                        ShortName = destInternalAccount.AccountBank.BankName,
+                        BankFullName = destInternalAccount.AccountBank.BankFullName,
+                        LogoUrl = "",
+                    },
+                    TransactionDate = DateTime.UtcNow,
+                    TransactionType = TransactionTypeEnum.Transfer,
+                    TransactionStatus = TransactionStatusEnum.Completed,
+                    Description = "",
+                    TransferContent = body.TransferContent,
+                    IsBankingTransfer = false,
+                    UseSourceAsLinkingBank = false,
+                };
+
+                var transactionDto = _mapper.Map<TransactionDto>(transaction);
+
+                await _transactionProducer.ProduceTransaction(transactionDto);
+                return Ok(transactionDto);
             }
-            return Ok();
         }
     }
 }

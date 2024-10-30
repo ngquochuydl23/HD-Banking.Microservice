@@ -5,7 +5,7 @@
 
         public string SourceAccountId { get; set; }
 
-        public string DestAccountNo { get; set; }
+        public string DestWalletAccountNo { get; set; }
 
         public string TransferContent { get; set; }
 

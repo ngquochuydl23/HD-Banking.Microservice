@@ -45,5 +45,25 @@ namespace HD.Wallet.Transaction.Service.ExternalServices
             var data = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<HttpResultDto<AccountDto>>(data).Result;
         }
+
+        public async Task<AccountDto> GetWalletAccountByNo(string accountNo)
+        {
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, _apiBaseUrl + "/Account/Wallet/" + accountNo);
+            HttpResponseMessage response = await _httpClient.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorJson = await response.Content.ReadAsStringAsync();
+                if (response.StatusCode.Equals(400) || response.StatusCode.Equals(404))
+                {
+                    return null;
+                }
+                throw new Exception($"Failed to get account. Status Code: {response.StatusCode}, Response: {errorJson}");
+            }
+
+            var data = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<HttpResultDto<AccountDto>>(data).Result;
+        }
     }
 }

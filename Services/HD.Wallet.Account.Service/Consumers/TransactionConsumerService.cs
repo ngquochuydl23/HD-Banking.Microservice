@@ -97,6 +97,7 @@ namespace HD.Wallet.Account.Service.Consumers
             {
                 if (!transaction.UseSourceAsLinkingBank)
                 {
+                    _logger.LogDebug("Update source wallet balance");
                     var sourceWallet = _accountRepo
                         .GetQueryable()
                         .FirstOrDefault(x => !x.IsBankLinking
@@ -105,11 +106,12 @@ namespace HD.Wallet.Account.Service.Consumers
 
                     sourceWallet.WalletBalance -= transaction.Amount;
 
-                    _accountRepo.SaveChanges();
+                    _accountRepo.Update(sourceWallet.Id, sourceWallet);
                 }
 
                 if (!transaction.IsBankingTransfer)
                 {
+                    _logger.LogDebug("Update destination wallet balance");
                     var destWallet = _accountRepo
                         .GetQueryable()
                         .FirstOrDefault(x => !x.IsBankLinking
@@ -118,7 +120,7 @@ namespace HD.Wallet.Account.Service.Consumers
 
                     destWallet.WalletBalance += transaction.Amount;
 
-                    _accountRepo.SaveChanges();
+                    _accountRepo.Update(destWallet.Id, destWallet);
                 }
                 _unitOfWork.Complete();
             }

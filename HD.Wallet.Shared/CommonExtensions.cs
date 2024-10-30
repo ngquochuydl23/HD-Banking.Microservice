@@ -21,6 +21,7 @@ using IdentityServer4.Models;
 using IdentityModel.Client;
 using System.Reflection;
 using HD.Wallet.Shared.Attributes;
+using System;
 
 
 namespace HD.Wallet.Shared
@@ -55,10 +56,14 @@ namespace HD.Wallet.Shared
 
 		public static IServiceCollection AddDbContext<T>(this IServiceCollection services, IConfiguration configuration) where T : DbContext
 		{
-			services.AddDbContext<T>(x =>
+            var environment = configuration["ASPNETCORE_ENVIRONMENT"] ?? "Production";
+            services.AddDbContext<T>(x =>
 			{
-				x.EnableSensitiveDataLogging();
-				x.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
+                if (environment.Equals("Development", StringComparison.OrdinalIgnoreCase))
+                {
+                    x.EnableSensitiveDataLogging();
+                }
+                x.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
 
 			});
 			AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);

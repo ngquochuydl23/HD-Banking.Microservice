@@ -6,6 +6,7 @@ using HD.Wallet.Shared;
 using HD.Wallet.Shared.Interceptors;
 using HD.Wallet.Shared.Seedworks;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace HD.Wallet.BankingResource.Service
 {
@@ -19,6 +20,12 @@ namespace HD.Wallet.BankingResource.Service
 
             builder.Services.AddDbContext<BankingResourceDbContext>(options =>
             {
+
+                if (builder.Environment.IsDevelopment())
+                {
+                    options.EnableSensitiveDataLogging();
+                }
+
                 options.UseMySql(
                    builder.Configuration.GetConnectionString("MySQLConnection"),
                    ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("MySQLConnection"))
