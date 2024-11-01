@@ -71,6 +71,18 @@ namespace HD.Wallet.Account.Service.Controllers
             return Ok(account);
         }
 
+        [HttpGet("Primary")]
+        public IActionResult GetPrimaryAccount()
+        {
+            var account = _accountRepo
+                   .GetQueryableNoTracking()
+                   .FirstOrDefault(x => !x.IsBankLinking && x.UserId.Equals(LoggingUserId))
+                           ?? throw new AppException("Account not found");
+
+            return Ok(account);
+        }
+
+
         [AllowAnonymous]
         [HttpGet("Wallet/{accountNo}")]
         public IActionResult GetWalletAccountByNo(string accountNo)
