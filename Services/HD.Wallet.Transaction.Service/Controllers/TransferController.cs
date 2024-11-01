@@ -185,7 +185,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
         }
 
         [ServiceFilter(typeof(PinRequiredAttribute))]
-        [HttpPost("InternalTransfer")]
+        [HttpPost("a")]
         public async Task<IActionResult> InternalTransfer(
            [FromHeader(Name = "X-EncryptedPin")] string pin,
            [FromBody] RequestInternalTransferDto body)

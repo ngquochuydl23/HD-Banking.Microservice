@@ -71,27 +71,18 @@ namespace HD.Wallet.Account.Service.Controllers
             return Ok(account);
         }
 
-        [HttpGet("Primary")]
-        public IActionResult GetPrimaryAccount()
-        {
-            var account = _accountRepo
-                   .GetQueryableNoTracking()
-                   .FirstOrDefault(x => !x.IsBankLinking && x.UserId.Equals(LoggingUserId))
-                           ?? throw new AppException("Account not found");
-
-            return Ok(account);
-        }
-
         [AllowAnonymous]
-        [HttpGet("Wallet/{accountNo}")]
-        public IActionResult GetWalletAccountByNo(string accountNo)
+        [HttpGet("Wallet")]
+        public IActionResult GetWalletAccount([FromQuery] string phoneNumber)
         {
             var account = _accountRepo
-                   .GetQueryableNoTracking()
-                   .FirstOrDefault(x => !x.IsBankLinking && x.AccountBank.BankAccountId.Equals(accountNo))
-                           ?? throw new AppException("Account not found");
+                  .GetQueryableNoTracking()
+                  .FirstOrDefault(x => !x.IsBankLinking && x.AccountBank.BankAccountId.Equals(phoneNumber))
+                          ?? throw new AppException("Account not found");
+
 
             return Ok(account);
+            
         }
 
         [HttpGet("Wallet/Balance")]

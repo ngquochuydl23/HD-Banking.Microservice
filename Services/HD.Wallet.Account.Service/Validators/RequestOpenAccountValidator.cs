@@ -21,7 +21,6 @@ namespace HD.Wallet.Account.Service.Validators
             RuleFor(exp => exp.FullName)
                 .NotEmpty()
                 .WithMessage("FullName must not be null")
-                .Matches("^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯăẠ-ỹ\\s]+$")
                 .WithMessage("FullName is invalid");
 
             RuleFor(exp => exp.DateOfBirth)

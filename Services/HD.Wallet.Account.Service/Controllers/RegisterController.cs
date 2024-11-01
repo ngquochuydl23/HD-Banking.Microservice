@@ -47,10 +47,11 @@ namespace HD.Wallet.Account.Service.Controllers
         public async Task<IActionResult> RequestOpenAccount([FromBody] RequestOpenAccountDto body)
         {   
             var validationResult = await _validations.ValidateAsync(body);
-            if (!validationResult.IsValid)
-            {
-                throw new AppException(validationResult.Errors.ToString());
-            }
+            //if (!validationResult.IsValid)
+            //{
+            //    Console.WriteLine(validationResult.Errors);
+            //    throw new AppException(validationResult.Errors.ToString());
+            //}
 
             var user = new UserEntity();
             var availableUser = _userRepo
@@ -58,7 +59,8 @@ namespace HD.Wallet.Account.Service.Controllers
                 .FirstOrDefault(x => x.IdCardNo.Equals(body.PhoneNumber)
                     || x.Email.Equals(body.Email)
                     || x.IdCardNo.Equals(body.IdCardNo));
-            
+
+     
             if (availableUser != null)
             {
                 var errors = new List<object>();
