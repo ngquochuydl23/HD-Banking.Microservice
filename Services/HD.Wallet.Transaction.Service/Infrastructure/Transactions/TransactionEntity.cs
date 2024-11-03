@@ -30,7 +30,8 @@ namespace HD.Wallet.Transaction.Service.Infrastructure.Transactions
 
         public string TransferContent {  get; set; }
 
+        public string SenderUserId { get; set; }
 
-
+        public string? ReceiverUserId { get; set; }
     }
 }

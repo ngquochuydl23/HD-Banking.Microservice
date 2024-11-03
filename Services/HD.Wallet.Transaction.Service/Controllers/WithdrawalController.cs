@@ -32,8 +32,6 @@ namespace HD.Wallet.Transaction.Service.Controllers
             var sourceWalletAccount = await _accountExternalService.GetWalletAccountByNo(PhoneNumber)
                 ?? throw new AppException("Source wallet account not found");
 
-
-
             var linkingAccount = await _accountExternalService.GetAccountById(body.LinkingAccountId)
                 ?? throw new AppException("Linking account not found");
 

@@ -37,7 +37,7 @@ namespace HD.Wallet.Shared.Attributes
             {
                 var errorResponse = new
                 {
-                    Message = "Unauthorized: Missing or invalid PIN.",
+                    Error = "Unauthorized: Missing or invalid PIN.",
                     StatusCode = StatusCodes.Status401Unauthorized
                 };
 
@@ -67,7 +67,7 @@ namespace HD.Wallet.Shared.Attributes
                 {
                     context.Result = new JsonResult(new
                     {
-                        Message = $"Failed to validate user. Status Code: {response.StatusCode}, Response: {errorJson}",
+                        Error = $"Failed to validate user. Status Code: {response.StatusCode}, Response: {errorJson}",
                         StatusCode = StatusCodes.Status400BadRequest
                     })
                     {

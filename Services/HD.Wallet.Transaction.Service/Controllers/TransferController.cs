@@ -104,6 +104,8 @@ namespace HD.Wallet.Transaction.Service.Controllers
                     TransferContent = body.TransferContent,
                     IsBankingTransfer = true,
                     UseSourceAsLinkingBank = false,
+                    SenderUserId = LoggingUserId,
+                    ReceiverUserId = null
                 });
 
                 var transactionDto = _mapper.Map<TransactionDto>(transaction);
@@ -173,6 +175,8 @@ namespace HD.Wallet.Transaction.Service.Controllers
                     TransferContent = body.TransferContent,
                     IsBankingTransfer = true,
                     UseSourceAsLinkingBank = true,
+                    SenderUserId = LoggingUserId,
+                    ReceiverUserId = null
                 });
 
 
@@ -246,6 +250,8 @@ namespace HD.Wallet.Transaction.Service.Controllers
                     TransferContent = body.TransferContent,
                     IsBankingTransfer = false,
                     UseSourceAsLinkingBank = false,
+                    SenderUserId = LoggingUserId,
+                    ReceiverUserId = destInternalAccount.UserId,
                 });
 
                 var transactionDto = _mapper.Map<TransactionDto>(transaction);
@@ -299,6 +305,8 @@ namespace HD.Wallet.Transaction.Service.Controllers
                     TransferContent = body.TransferContent,
                     IsBankingTransfer = false,
                     UseSourceAsLinkingBank = true,
+                    SenderUserId = LoggingUserId,
+                    ReceiverUserId = destInternalAccount.UserId,
                 });
 
                 var transactionDto = _mapper.Map<TransactionDto>(transaction);
