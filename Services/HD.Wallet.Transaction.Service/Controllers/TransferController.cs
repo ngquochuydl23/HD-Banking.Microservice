@@ -242,7 +242,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
                         ShortName = destInternalAccount.AccountBank.BankName,
                         BankFullName = destInternalAccount.AccountBank.BankFullName,
                         LogoUrl = destInternalAccount.AccountBank.LogoUrl,
-                        UserAvatar = destInternalAccount.Avatar,
+                        UserAvatar = destInternalAccount?.User?.Avatar,
                     },
                     TransactionDate = DateTime.UtcNow,
                     TransactionType = TransactionTypeEnum.Transfer,
@@ -252,7 +252,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
                     IsBankingTransfer = false,
                     UseSourceAsLinkingBank = false,
                     SenderUserId = LoggingUserId,
-                    ReceiverUserId = destInternalAccount.UserId,
+                    ReceiverUserId = destInternalAccount?.UserId,
                 });
 
                 var transactionDto = _mapper.Map<TransactionDto>(transaction);
@@ -298,7 +298,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
                         ShortName = destInternalAccount.AccountBank.BankName,
                         BankFullName = destInternalAccount.AccountBank.BankFullName,
                         LogoUrl = destInternalAccount.AccountBank.LogoUrl,
-                        UserAvatar = destInternalAccount.Avatar,
+                        UserAvatar = destInternalAccount?.User?.Avatar,
                     },
                     TransactionDate = DateTime.UtcNow,
                     TransactionType = TransactionTypeEnum.Transfer,
@@ -308,7 +308,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
                     IsBankingTransfer = false,
                     UseSourceAsLinkingBank = true,
                     SenderUserId = LoggingUserId,
-                    ReceiverUserId = destInternalAccount.UserId,
+                    ReceiverUserId = destInternalAccount?.UserId,
                 });
 
                 var transactionDto = _mapper.Map<TransactionDto>(transaction);

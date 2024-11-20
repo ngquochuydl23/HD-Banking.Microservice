@@ -132,12 +132,32 @@ namespace HD.Wallet.Account.Service.Controllers
             if (!BCrypt.Net.BCrypt.Verify(pin, user.PinPassword))
             {
                 throw new AppException("Pin is incorrect");
-            }
+            } 
 
             user.PinPassword = BCrypt.Net.BCrypt.HashPassword(body.NewEncryptedPin);
 
             _userRepo.SaveChanges();
             return Ok();
+        }
+
+        [Authorize]
+        [HttpPost("UpdateAvatar")]
+        public IActionResult UpdateAvatar([FromBody] RequestUpdateAvatar body)
+        {
+            if (string.IsNullOrEmpty(body.Avatar))
+            {
+                throw new AppException("Avatar must not be null of empty.");
+            }
+
+            var user = _userRepo
+                .GetQueryable()
+                .FirstOrDefault(x => x.Id.Equals(LoggingUserId))
+                    ?? throw new AppException("User not found");
+
+            user.Avatar = body.Avatar;
+            _userRepo.SaveChanges();
+
+            return Ok(_mapper.Map<UserDto>(user));
         }
     }
 }
