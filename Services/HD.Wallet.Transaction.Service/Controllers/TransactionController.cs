@@ -62,12 +62,17 @@ namespace HD.Wallet.Transaction.Service.Controllers
             return Ok(_mapper.Map<TransactionDto>(transaction));
         }
 
-        [HttpGet("Recently/Object")]
+        [HttpGet("RecentlyDestinations")]
         public IActionResult GetRecentlyTransferObject([FromQuery] RecentlyTranferFilterQuery filterQuery)
         {
             var destinations = _transactionRepo
                .GetQueryableNoTracking()
                .Where(x => x.SenderUserId.Equals(LoggingUserId))
+               .GroupBy(x => x.DestAccount.AccountNo)
+               .Select(x => x
+                    .OrderByDescending(x => x.TransactionDate)
+                    .FirstOrDefault())
+               .ToList()
                .OrderByDescending(x => x.TransactionDate)
                .Select(x => x.DestAccount)
                .ToList();
