@@ -68,7 +68,12 @@ namespace HD.Wallet.Transaction.Service.Controllers
             var destinations = _transactionRepo
                .GetQueryableNoTracking()
                .Where(x => x.SenderUserId.Equals(LoggingUserId))
-               .GroupBy(x => x.DestAccount.AccountNo)
+               .GroupBy(x => new
+               {
+                   x.DestAccount.Bin,
+                   x.DestAccount.AccountNo,
+
+               })
                .Select(x => x
                     .OrderByDescending(x => x.TransactionDate)
                     .FirstOrDefault())
