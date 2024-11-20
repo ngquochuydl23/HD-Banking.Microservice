@@ -14,6 +14,7 @@ using HD.Wallet.Shared.Utils;
 using Mailjet.Client.Resources;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace HD.Wallet.Account.Service.Controllers
 {
@@ -89,10 +90,11 @@ namespace HD.Wallet.Account.Service.Controllers
         {
             var account = _accountRepo
                    .GetQueryableNoTracking()
+                   .Include(x => x.User)
                    .FirstOrDefault(x => !x.IsBankLinking && x.AccountBank.BankAccountId.Equals(accountNo))
                            ?? throw new AppException("Account not found");
 
-            return Ok(account);
+            return Ok(_mapper.Map<AccountDto>(account));
         }
 
         [HttpGet("Wallet/Balance")]

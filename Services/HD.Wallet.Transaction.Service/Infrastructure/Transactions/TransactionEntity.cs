@@ -14,7 +14,7 @@ namespace HD.Wallet.Transaction.Service.Infrastructure.Transactions
 
         public AccountBankValueObject SourceAccount { get; set; }
 
-        public AccountBankValueObject DestAccount { get; set; }
+        public DestAccountBankValueObject DestAccount { get; set; }
 
         public bool IsBankingTransfer {  get; set; }
 

@@ -29,5 +29,9 @@ namespace HD.Wallet.Shared.SharedDtos.Transactions
         public string Description { get; set; }
 
         public string TransferContent { get; set; }
+
+        public string SenderUserId { get; set; }
+
+        public string? ReceiverUserId { get; set; }
     }
 }

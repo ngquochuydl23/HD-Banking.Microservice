@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HD.Wallet.Shared.SharedDtos.Users;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,5 +28,7 @@ namespace HD.Wallet.Shared.SharedDtos.Accounts
         public bool IsBlocked { get; set; } = false;
 
         public bool IsUnlinked { get; set; } = false;
+
+        public virtual PublicUserDto? User { get; set; }
     }
 }

@@ -87,7 +87,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
                         BankFullName = srcWalletAccount.AccountBank.BankFullName,
                         LogoUrl = srcWalletAccount.AccountBank.LogoUrl
                     },
-                    DestAccount = new AccountBankValueObject
+                    DestAccount = new DestAccountBankValueObject
                     {
                         Bin = destBankAccount.Bin,
                         AccountNo = destBankAccount.AccountNo,
@@ -158,7 +158,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
                         BankFullName = srcBankAccount.Bank.Name,
                         LogoUrl = srcBankAccount.Bank.LogoApp
                     },
-                    DestAccount = new AccountBankValueObject
+                    DestAccount = new DestAccountBankValueObject
                     {
                         Bin = destBankAccount.Bin,
                         AccountNo = destBankAccount.AccountNo,
@@ -233,7 +233,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
                         BankFullName = walletAccount.AccountBank.BankFullName,
                         LogoUrl = walletAccount.AccountBank.LogoUrl
                     },
-                    DestAccount = new AccountBankValueObject
+                    DestAccount = new DestAccountBankValueObject
                     {
                         Bin = destInternalAccount.AccountBank.Bin,
                         AccountNo = destInternalAccount.AccountBank.BankAccountId,
@@ -241,7 +241,8 @@ namespace HD.Wallet.Transaction.Service.Controllers
                         OwnerName = destInternalAccount.AccountBank.BankOwnerName,
                         ShortName = destInternalAccount.AccountBank.BankName,
                         BankFullName = destInternalAccount.AccountBank.BankFullName,
-                        LogoUrl = "",
+                        LogoUrl = destInternalAccount.AccountBank.LogoUrl,
+                        UserAvatar = destInternalAccount.Avatar,
                     },
                     TransactionDate = DateTime.UtcNow,
                     TransactionType = TransactionTypeEnum.Transfer,
@@ -288,7 +289,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
                         BankFullName = srcBankAccount.Bank.Name,
                         LogoUrl = srcBankAccount.Bank.LogoApp
                     },
-                    DestAccount = new AccountBankValueObject
+                    DestAccount = new DestAccountBankValueObject
                     {
                         Bin = destInternalAccount.AccountBank.Bin,
                         AccountNo = destInternalAccount.AccountBank.BankAccountId,
@@ -296,7 +297,8 @@ namespace HD.Wallet.Transaction.Service.Controllers
                         OwnerName = destInternalAccount.AccountBank.BankOwnerName,
                         ShortName = destInternalAccount.AccountBank.BankName,
                         BankFullName = destInternalAccount.AccountBank.BankFullName,
-                        LogoUrl = "",
+                        LogoUrl = destInternalAccount.AccountBank.LogoUrl,
+                        UserAvatar = destInternalAccount.Avatar,
                     },
                     TransactionDate = DateTime.UtcNow,
                     TransactionType = TransactionTypeEnum.Transfer,

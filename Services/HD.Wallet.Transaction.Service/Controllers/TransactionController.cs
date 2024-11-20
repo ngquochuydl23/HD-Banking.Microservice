@@ -43,6 +43,8 @@ namespace HD.Wallet.Transaction.Service.Controllers
                 .GetQueryableNoTracking()
                 .WhereIf(!string.IsNullOrEmpty(filterQuery.TransactionStatus), x => x.TransactionStatus.Equals(filterQuery.TransactionStatus))
                 .WhereIf(!string.IsNullOrEmpty(filterQuery.TransactionType), x => x.TransactionType.Equals(filterQuery.TransactionType))
+                .WhereIf(filterQuery.Sent.HasValue && filterQuery.Sent.Value, x => x.SenderUserId.Equals(LoggingUserId))
+                .WhereIf(filterQuery.Received.HasValue && filterQuery.Received.Value, x => x.ReceiverUserId.Equals(LoggingUserId))
                 .OrderByDescending(x => x.TransactionDate)
                 .ToList();
 
@@ -58,6 +60,19 @@ namespace HD.Wallet.Transaction.Service.Controllers
                     ?? throw new AppException("Transaction not found");
 
             return Ok(_mapper.Map<TransactionDto>(transaction));
+        }
+
+        [HttpGet("Recently/Object")]
+        public IActionResult GetRecentlyTransferObject([FromQuery] RecentlyTranferFilterQuery filterQuery)
+        {
+            var destinations = _transactionRepo
+               .GetQueryableNoTracking()
+               .Where(x => x.SenderUserId.Equals(LoggingUserId))
+               .OrderByDescending(x => x.TransactionDate)
+               .Select(x => x.DestAccount)
+               .ToList();
+
+            return Ok(destinations);
         }
     }
 }
