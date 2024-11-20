@@ -102,13 +102,13 @@ namespace HD.Wallet.Account.Service.Controllers
         {
             var account = _accountRepo
                 .GetQueryableNoTracking()
-                .FirstOrDefault(x => x.UserId.Equals(LoggingUserId))
+                .FirstOrDefault(x => x.UserId.Equals(LoggingUserId) && !x.IsBankLinking)
                     ?? throw new AppException("Account not found");
 
-            if (account.IsBankLinking)
-            {
-                throw new AppException("Cannot track bank account");
-            }
+            //if (account.IsBankLinking)
+            //{
+            //    throw new AppException("Cannot track bank account");
+            //}
 
             return Ok(new
             {
