@@ -1,5 +1,5 @@
 ﻿using HD.Wallet.Account.Service.Infrastructure.Entities.Accounts;
-using HD.Wallet.Account.Service.Infrastructure.Entities.Contacts;
+using HD.Wallet.Account.Service.Infrastructure.Entities.SavedDestinations;
 using HD.Wallet.Account.Service.Infrastructure.Entities.Users;
 using HD.Wallet.Shared.Seedworks;
 using Mailjet.Client.Resources;
@@ -36,25 +36,19 @@ namespace HD.Wallet.Account.Service.Infrastructure
                     .HasForeignKey(x => x.UserId);
             });
 
-            modelBuilder.Entity<ContactEntity>(entity =>
+            modelBuilder.Entity<SavedDestinationEntity>(entity =>
             {
-                entity.ToTable("Contact");
+                entity.ToTable("SavedDestination");
                 entity.HasKey(x => x.Id);
                 entity
-                    .HasOne(x => x.Owner)
-                    .WithMany(user => user.Contacts)
-                    .HasForeignKey(x => x.OwnerId);
+                    .HasOne(x => x.User)
+                    .WithMany(user => user.SavedDestinations)
+                    .HasForeignKey(x => x.UserId);
 
                 entity
                     .HasOne(x => x.ReferenceUser)
-                    .WithMany(user => user.ReferencedContacts)
+                    .WithMany(user => user.ReferencedUsers)
                     .HasForeignKey(x => x.ReferenceUserId);
-
-                entity
-                     .Property(e => e.ContactType)
-                     .HasConversion(
-                          v => v.ToString(),
-                          v => (ContactTypeEnum)Enum.Parse(typeof(ContactTypeEnum), v));
             });
 
            

@@ -2,7 +2,7 @@
 using HD.Wallet.Shared.Seedworks;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using HD.Wallet.Account.Service.Infrastructure.Entities.Contacts;
+using HD.Wallet.Account.Service.Infrastructure.Entities.SavedDestinations;
 
 namespace HD.Wallet.Account.Service.Infrastructure.Entities.Users
 {
@@ -52,9 +52,9 @@ namespace HD.Wallet.Account.Service.Infrastructure.Entities.Users
 
         public ICollection<AccountEntity> Accounts { get; set; } = new HashSet<AccountEntity>();
 
-        public ICollection<ContactEntity> Contacts { get; set; } = new HashSet<ContactEntity>();
+        public ICollection<SavedDestinationEntity> SavedDestinations { get; set; } = new HashSet<SavedDestinationEntity>();
 
-        public ICollection<ContactEntity> ReferencedContacts { get; set; } = new HashSet<ContactEntity>();
+        public ICollection<SavedDestinationEntity> ReferencedUsers { get; set; } = new HashSet<SavedDestinationEntity>();
 
         public AddressValueObject Address { get; set; }
 
