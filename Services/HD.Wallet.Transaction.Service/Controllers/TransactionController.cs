@@ -1,18 +1,14 @@
 ﻿using AutoMapper;
 using HD.Wallet.Shared;
-using HD.Wallet.Shared.Attributes;
 using HD.Wallet.Shared.Exceptions;
 using HD.Wallet.Shared.Queries;
 using HD.Wallet.Shared.Seedworks;
 using HD.Wallet.Shared.SharedDtos.Transactions;
-using HD.Wallet.Transaction.Service.Dtos.Funds;
-using HD.Wallet.Transaction.Service.Dtos.Transfers;
-using HD.Wallet.Transaction.Service.Dtos.Withdrawls;
-using HD.Wallet.Transaction.Service.ExternalServices;
 using HD.Wallet.Transaction.Service.FilterQueries;
 using HD.Wallet.Transaction.Service.Infrastructure.Transactions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Transactions;
 
 namespace HD.Wallet.Transaction.Service.Controllers
 {
@@ -68,18 +64,17 @@ namespace HD.Wallet.Transaction.Service.Controllers
             var destinations = _transactionRepo
                .GetQueryableNoTracking()
                .Where(x => x.SenderUserId.Equals(LoggingUserId))
-               .Where(x => x.TransactionStatus.Equals(TransactionTypeEnum.Transfer))
+               .Where(x => x.TransactionType.Equals(TransactionTypeEnum.Transfer))
                .Where(x => x.TransactionStatus.Equals(TransactionStatusEnum.Completed))
                .GroupBy(x => new
                {
                    x.DestAccount.Bin,
                    x.DestAccount.AccountNo,
-
                })
                .Select(x => x
                     .OrderByDescending(x => x.TransactionDate)
                     .FirstOrDefault())
-               .ToList()
+               .AsEnumerable()
                .OrderByDescending(x => x.TransactionDate)
                .Select(x => x.DestAccount)
                .ToList();

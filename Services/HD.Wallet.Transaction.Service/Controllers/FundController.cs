@@ -44,66 +44,66 @@ namespace HD.Wallet.Transaction.Service.Controllers
         }
 
 
-        [HttpPost]
-        public async IActionResult Fund([FromBody] RequestFundDto body)
-        {
-            var sourceAccount = await _accountExternalService.GetAccountById(body.SourceAccountId)
-                ?? throw new AppException("Source linking account not found");
+        //[HttpPost]
+        //public async IActionResult Fund([FromBody] RequestFundDto body)
+        //{
+        //    var sourceAccount = await _accountExternalService.GetAccountById(body.SourceAccountId)
+        //        ?? throw new AppException("Source linking account not found");
 
-            if (!sourceAccount.IsBankLinking)
-            {
-                throw new AppException("Source account must be linking bank");
-            }
+        //    if (!sourceAccount.IsBankLinking)
+        //    {
+        //        throw new AppException("Source account must be linking bank");
+        //    }
 
-            var bankAccount = await _bankExternalService.GetCitizenAccount(sourceAccount.AccountBank.Bin, sourceAccount.AccountBank.BankAccountId)
-                ?? throw new AppException("Bank account not found");
+        //    var bankAccount = await _bankExternalService.GetCitizenAccount(sourceAccount.AccountBank.Bin, sourceAccount.AccountBank.BankAccountId)
+        //        ?? throw new AppException("Bank account not found");
 
-            if (bankAccount.Balance < body.Amount)
-            {
-                throw new AppException("Balance is not enough to fund");
-            }
+        //    if (bankAccount.Balance < body.Amount)
+        //    {
+        //        throw new AppException("Balance is not enough to fund");
+        //    }
 
 
-            var transaction = _transactionRepo.Insert(new TransactionEntity()
-            {
-                Id = Guid
-                    .NewGuid()
-                    .ToString(),
-                Amount = body.Amount,
-                SourceAccount = new AccountBankValueObject
-                {
-                    Bin = bankAccount.Bin,
-                    AccountNo = bankAccount.AccountNo,
-                    BankName = bankAccount.BankName,
-                    OwnerName = bankAccount.OwnerName,
-                    ShortName = bankAccount.Bank.ShortName,
-                    BankFullName = bankAccount.Bank.Name,
-                    LogoUrl = bankAccount.Bank.LogoApp
-                },
-                //DestAccount = new AccountBankValueObject
-                //{
-                //    Bin = destBankAccount.Bin,
-                //    AccountNo = destBankAccount.AccountNo,
-                //    BankName = destBankAccount.BankName,
-                //    OwnerName = destBankAccount.OwnerName,
-                //    ShortName = destBankAccount.Bank.ShortName,
-                //    BankFullName = destBankAccount.Bank.Name,
-                //    LogoUrl = destBankAccount.Bank.LogoApp
-                //},
-                TransactionDate = DateTime.UtcNow,
-                TransactionType = TransactionTypeEnum.Transfer,
-                TransactionStatus = TransactionStatusEnum.Completed,
-                Description = "",
-                //TransferContent = body.TransferContent,
-                IsBankingTransfer = true,
-                UseSourceAsLinkingBank = false,
-            });
+        //    var transaction = _transactionRepo.Insert(new TransactionEntity()
+        //    {
+        //        Id = Guid
+        //            .NewGuid()
+        //            .ToString(),
+        //        Amount = body.Amount,
+        //        SourceAccount = new AccountBankValueObject
+        //        {
+        //            Bin = bankAccount.Bin,
+        //            AccountNo = bankAccount.AccountNo,
+        //            BankName = bankAccount.BankName,
+        //            OwnerName = bankAccount.OwnerName,
+        //            ShortName = bankAccount.Bank.ShortName,
+        //            BankFullName = bankAccount.Bank.Name,
+        //            LogoUrl = bankAccount.Bank.LogoApp
+        //        },
+        //        //DestAccount = new AccountBankValueObject
+        //        //{
+        //        //    Bin = destBankAccount.Bin,
+        //        //    AccountNo = destBankAccount.AccountNo,
+        //        //    BankName = destBankAccount.BankName,
+        //        //    OwnerName = destBankAccount.OwnerName,
+        //        //    ShortName = destBankAccount.Bank.ShortName,
+        //        //    BankFullName = destBankAccount.Bank.Name,
+        //        //    LogoUrl = destBankAccount.Bank.LogoApp
+        //        //},
+        //        TransactionDate = DateTime.UtcNow,
+        //        TransactionType = TransactionTypeEnum.Transfer,
+        //        TransactionStatus = TransactionStatusEnum.Completed,
+        //        Description = "",
+        //        //TransferContent = body.TransferContent,
+        //        IsBankingTransfer = true,
+        //        UseSourceAsLinkingBank = false,
+        //    });
 
-            var transactionDto = _mapper.Map<TransactionDto>(transaction);
+        //    var transactionDto = _mapper.Map<TransactionDto>(transaction);
 
-            await _transactionProducer.ProduceTransaction(transactionDto);
-            return Ok(transactionDto);
-        }
+        //    await _transactionProducer.ProduceTransaction(transactionDto);
+        //    return Ok(transactionDto);
+        //}
 
         
     }
