@@ -68,6 +68,8 @@ namespace HD.Wallet.Transaction.Service.Controllers
             var destinations = _transactionRepo
                .GetQueryableNoTracking()
                .Where(x => x.SenderUserId.Equals(LoggingUserId))
+               .Where(x => x.TransactionStatus.Equals(TransactionTypeEnum.Transfer))
+               .Where(x => x.TransactionStatus.Equals(TransactionStatusEnum.Completed))
                .GroupBy(x => new
                {
                    x.DestAccount.Bin,
