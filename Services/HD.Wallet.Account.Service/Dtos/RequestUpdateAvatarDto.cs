@@ -1,6 +1,6 @@
 namespace HD.Wallet.Account.Service.Dtos
 {
-    public class RequestUpdateAvatar
+    public class RequestUpdateAvatarDto
     {
         public string Avatar { get; set; }
     }

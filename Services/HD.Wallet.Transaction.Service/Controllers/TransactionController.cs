@@ -76,6 +76,8 @@ namespace HD.Wallet.Transaction.Service.Controllers
                     .FirstOrDefault())
                .AsEnumerable()
                .OrderByDescending(x => x.TransactionDate)
+               .Skip(filterQuery.Offset)
+               .Take(filterQuery.Limit)
                .Select(x => x.DestAccount)
                .ToList();
 

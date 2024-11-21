@@ -142,7 +142,7 @@ namespace HD.Wallet.Account.Service.Controllers
 
         [Authorize]
         [HttpPost("UpdateAvatar")]
-        public IActionResult UpdateAvatar([FromBody] RequestUpdateAvatar body)
+        public IActionResult UpdateAvatar([FromBody] RequestUpdateAvatarDto body)
         {
             if (string.IsNullOrEmpty(body.Avatar))
             {

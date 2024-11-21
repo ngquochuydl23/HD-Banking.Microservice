@@ -3,6 +3,7 @@ using System;
 using HD.Wallet.Account.Service.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HD.Wallet.Account.Service.Migrations
 {
     [DbContext(typeof(HdWalletAccountDbContext))]
-    partial class HdWalletAccountDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241121144207_UpdateSaved1")]
+    partial class UpdateSaved1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,6 +93,10 @@ namespace HD.Wallet.Account.Service.Migrations
 
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("ReferenceUserId")
                         .HasColumnType("text");
