@@ -42,6 +42,8 @@ namespace HD.Wallet.Transaction.Service.Controllers
                 .WhereIf(filterQuery.Sent.HasValue && filterQuery.Sent.Value, x => x.SenderUserId.Equals(LoggingUserId))
                 .WhereIf(filterQuery.Received.HasValue && filterQuery.Received.Value, x => x.ReceiverUserId.Equals(LoggingUserId))
                 .OrderByDescending(x => x.TransactionDate)
+                .Skip(filterQuery.Offset)
+                .Take(filterQuery.Limit)
                 .ToList();
 
             return Ok(_mapper.Map<IList<TransactionDto>>(transactions));

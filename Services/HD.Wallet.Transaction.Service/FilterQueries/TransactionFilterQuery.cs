@@ -1,6 +1,8 @@
-﻿namespace HD.Wallet.Transaction.Service.FilterQueries
+﻿using HD.Wallet.Shared.Filters;
+
+namespace HD.Wallet.Transaction.Service.FilterQueries
 {
-    public class TransactionFilterQuery
+    public class TransactionFilterQuery: PaginationFilter
     {
         public string? TransactionType { get; set; }
 
