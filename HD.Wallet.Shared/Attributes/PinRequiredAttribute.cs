@@ -80,7 +80,7 @@ namespace HD.Wallet.Shared.Attributes
                 {
                     context.Result = new JsonResult(new
                     {
-                        Message = error.Error.ToString(),
+                        Error = error.Error.ToString(),
                         StatusCode = StatusCodes.Status400BadRequest
                     })
                     {
