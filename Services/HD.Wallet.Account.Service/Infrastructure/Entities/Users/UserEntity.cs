@@ -60,6 +60,12 @@ namespace HD.Wallet.Account.Service.Infrastructure.Entities.Users
 
         public WorkValueObject Work { get; set; }
 
+        public string CurrentLiving { get; set; }
+
+        public string MarrigeStatus { get; set; }
+
+        public string StudyLevel { get; set; }
+
         public UserEntity() 
         { 
             Id = Guid
