@@ -62,7 +62,7 @@ namespace HD.Wallet.Account.Service.Infrastructure.Entities.Users
 
         public string? CurrentLiving { get; set; }
 
-        public string? MarrigeStatus { get; set; }
+        public string? MarriageStatus { get; set; }
 
         public string? StudyLevel { get; set; }
 

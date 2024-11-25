@@ -53,7 +53,7 @@ namespace HD.Wallet.Account.Service.Controllers
 
             user.StudyLevel = body.StudyLevel;
             user.CurrentLiving = body.CurrentLiving;
-            user.MarrigeStatus = body.MarrigeStatus;
+            user.MarriageStatus = body.MarriageStatus;
             user.StudyLevel = body.StudyLevel;
             user.Work.Occupation = body.Occupation;
             user.Work.Position = body.Position;
@@ -87,7 +87,7 @@ namespace HD.Wallet.Account.Service.Controllers
         public async Task<IActionResult> FindUserByPhone([FromQuery] string phone)
         {
             var user = _userRepo
-                .GetQueryable()
+                .GetQueryableNoTracking()
                 .FirstOrDefault(x => x.PhoneNumber.Equals(phone))
                 ?? throw new AppException("User not found");
 
