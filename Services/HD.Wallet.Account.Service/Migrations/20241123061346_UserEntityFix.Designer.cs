@@ -3,6 +3,7 @@ using System;
 using HD.Wallet.Account.Service.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HD.Wallet.Account.Service.Migrations
 {
     [DbContext(typeof(HdWalletAccountDbContext))]
-    partial class HdWalletAccountDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241123061346_UserEntityFix")]
+    partial class UserEntityFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

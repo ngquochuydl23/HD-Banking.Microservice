@@ -47,9 +47,18 @@ namespace HD.Wallet.Account.Service.Controllers
         public IActionResult UpdateUserInfo([FromBody] RequestUpdateUserInfoDto body)
         {
             var user = _userRepo
-                 .GetQueryableNoTracking()
+                 .GetQueryable()
                  .FirstOrDefault(x => x.Id.Equals(LoggingUserId))
                    ?? throw new AppException("User not found");
+
+            user.StudyLevel = body.StudyLevel;
+            user.CurrentLiving = body.CurrentLiving;
+            user.MarrigeStatus = body.MarrigeStatus;
+            user.StudyLevel = body.StudyLevel;
+            user.Work.Occupation = body.Occupation;
+            user.Work.Position = body.Position;
+
+            _userRepo.SaveChanges();
 
             return Ok(_mapper.Map<UserDto>(user));
         }

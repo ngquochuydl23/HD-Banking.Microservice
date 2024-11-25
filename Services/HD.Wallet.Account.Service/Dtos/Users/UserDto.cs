@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using HD.Wallet.Account.Service.Infrastructure.Entities.Users;
 
 namespace HD.Wallet.Account.Service.Dtos.Users
 {
@@ -37,5 +38,7 @@ namespace HD.Wallet.Account.Service.Dtos.Users
         public string? FaceVerificationUrl { get; set; }
 
         public string? Avatar { get; set; }
+
+        public WorkValueObject Work {  get; set; }
     }
 }
