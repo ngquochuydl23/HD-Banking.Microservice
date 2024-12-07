@@ -29,7 +29,7 @@ namespace HD.Wallet.Account.Service
             builder.Services.AddTransient<IdCardExternalService>();
             builder.Services.AddTransient<BankExternalService>();
             builder.Services.AddScoped<RequestOpenAccountValidator>();
-	//		builder.Services.AddHostedService<TransactionConsumerService>();
+			//builder.Services.AddHostedService<TransactionConsumerService>();
 
 
             var app = builder.Build();

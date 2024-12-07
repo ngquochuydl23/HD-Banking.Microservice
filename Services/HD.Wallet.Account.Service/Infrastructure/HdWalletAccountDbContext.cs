@@ -1,4 +1,5 @@
 ﻿using HD.Wallet.Account.Service.Infrastructure.Entities.Accounts;
+using HD.Wallet.Account.Service.Infrastructure.Entities.Otps;
 using HD.Wallet.Account.Service.Infrastructure.Entities.SavedDestinations;
 using HD.Wallet.Account.Service.Infrastructure.Entities.Users;
 using HD.Wallet.Shared.Seedworks;
@@ -51,7 +52,12 @@ namespace HD.Wallet.Account.Service.Infrastructure
                     .HasForeignKey(x => x.ReferenceUserId);
             });
 
-           
+            modelBuilder.Entity<OtpEntity>(entity =>
+            {
+                entity.ToTable("Otp");
+                entity.HasKey(x => x.Id);
+            });
+
         }
     }
 }
