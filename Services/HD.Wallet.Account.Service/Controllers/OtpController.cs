@@ -134,7 +134,10 @@ namespace HD.Wallet.Account.Service.Controllers
 
             _otpRepo.SaveChanges();
 
-            return Ok();
+            return Ok(new
+            {
+                Msg = "OK"   
+            });
         }
     }
 }
