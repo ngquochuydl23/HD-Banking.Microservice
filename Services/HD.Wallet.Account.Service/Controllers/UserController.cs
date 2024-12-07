@@ -168,5 +168,31 @@ namespace HD.Wallet.Account.Service.Controllers
 
             return Ok(_mapper.Map<UserDto>(user));
         }
+
+        [Authorize]
+        [HttpPut("UpdatePassword")]
+        public IActionResult UpdatePassword([FromBody] RequestUpdatePasswordDto body)
+        {
+            if (string.IsNullOrEmpty(body.Password))
+            {
+                throw new AppException("body.Password must not be null of empty.");
+            }
+
+            if (string.IsNullOrEmpty(body.ConfirmPassword))
+            {
+                throw new AppException("body.ConfirmPassword must not be null of empty.");
+            }
+
+            var user = _userRepo
+                .GetQueryable()
+                .FirstOrDefault(x => x.Id.Equals(LoggingUserId))
+                    ?? throw new AppException("User not found");
+
+
+            user.HashPassword = BCrypt.Net.BCrypt.HashPassword(body.Password);
+            _userRepo.SaveChanges();
+
+            return Ok(_mapper.Map<UserDto>(user));
+        }
     }
 }

@@ -21,8 +21,8 @@ namespace HD.Wallet.Account.Service.Migrations
         {
             migrationBuilder.RenameColumn(
                 name: "MarriageStatus",
-                table: "User",
-                newName: "MarrigeStatus");
+                table: "User", 
+                newName: "MarriageStatus");
         }
     }
 }
