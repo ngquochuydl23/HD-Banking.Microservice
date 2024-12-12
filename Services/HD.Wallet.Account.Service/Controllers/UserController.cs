@@ -6,10 +6,15 @@ using HD.Wallet.Shared;
 using HD.Wallet.Shared.Exceptions;
 using HD.Wallet.Shared.Seedworks;
 using HD.Wallet.Shared.Utils;
+using Mailjet.Client.Resources;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace HD.Wallet.Account.Service.Controllers
 {
@@ -118,6 +123,8 @@ namespace HD.Wallet.Account.Service.Controllers
 
             return Ok();
         }
+        [AllowAnonymous]
+
 
         [Authorize]
         [HttpPost("ChangePinPassword")]
