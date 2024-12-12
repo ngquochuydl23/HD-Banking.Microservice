@@ -10,8 +10,6 @@
 
         public DateTime DateOfBirth { get; set; }
 
-        public int Sex { get; set; }
-
         public string IdCardNo { get; set; }
 
         public string? FaceVerificationUrl { get; set; }

@@ -24,7 +24,6 @@ namespace HD.Wallet.Account.Service.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IdCardExternalService _idCardExternalService;
-        private readonly RequestOpenAccountValidator _validations;
 
         public RegisterController(
             IEfRepository<UserEntity, string> userRepo,
@@ -32,48 +31,30 @@ namespace HD.Wallet.Account.Service.Controllers
             IUnitOfWork unitOfWork,
             IdCardExternalService idCardExternalService,
             ILogger<RegisterController> logger,
-            RequestOpenAccountValidator validations,
             IMapper mapper) : base(httpContextAccessor)
         {
             _userRepo = userRepo;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
-            _validations = validations;
             _idCardExternalService = idCardExternalService;
         }
 
         [HttpPost]
         public async Task<IActionResult> RequestOpenAccount([FromBody] RequestOpenAccountDto body)
-        {   
-            var validationResult = await _validations.ValidateAsync(body);
-            //if (!validationResult.IsValid)
-            //{
-            //    Console.WriteLine(validationResult.Errors);
-            //    throw new AppException(validationResult.Errors.ToString());
-            //}
+        {
 
             var user = new UserEntity();
             var availableUser = _userRepo
                 .GetQueryableNoTracking()
-                .FirstOrDefault(x => x.IdCardNo.Equals(body.PhoneNumber)
+                .Any(x => x.IdCardNo.Equals(body.PhoneNumber)
                     || x.Email.Equals(body.Email)
                     || x.IdCardNo.Equals(body.IdCardNo));
 
      
-            if (availableUser != null)
+            if (availableUser)
             {
-                var errors = new List<object>();
-
-                foreach (var failure in validationResult.Errors)
-                {
-                    errors.Add(new
-                    {
-                        Field = failure.PropertyName,
-                        Error = failure.ErrorMessage
-                    });
-                }
-                throw new AppException(JsonConvert.SerializeObject(errors));
+                throw new AppException("User is already created");
             }
 
             ExternalResponseIdCardDto idCardResponse = await _idCardExternalService.GetIdCardById(body.IdCardNo)

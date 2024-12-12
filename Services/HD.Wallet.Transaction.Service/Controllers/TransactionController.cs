@@ -37,6 +37,7 @@ namespace HD.Wallet.Transaction.Service.Controllers
         {
             var transactions = _transactionRepo
                 .GetQueryableNoTracking()
+                .Where(x => x.ReceiverUserId.Equals(LoggingUserId) || x.SenderUserId.Equals(LoggingUserId))
                 .WhereIf(!string.IsNullOrEmpty(filterQuery.TransactionStatus), x => x.TransactionStatus.Equals(filterQuery.TransactionStatus))
                 .WhereIf(!string.IsNullOrEmpty(filterQuery.TransactionType), x => x.TransactionType.Equals(filterQuery.TransactionType))
                 .WhereIf(filterQuery.Sent.HasValue && filterQuery.Sent.Value, x => x.SenderUserId.Equals(LoggingUserId))
